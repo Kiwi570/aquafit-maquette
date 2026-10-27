@@ -48,6 +48,14 @@ function quiz() {
   };
   form.addEventListener("change", maj);
   form.addEventListener("submit", (e) => e.preventDefault());
+  // Arrivée depuis une bouée de l'accueil : la réponse correspondante est déjà cochée.
+  let pre = null;
+  try { pre = sessionStorage.getItem("aqua-quiz"); sessionStorage.removeItem("aqua-quiz"); } catch (e) {}
+  if (pre) {
+    const [nom, valeur] = pre.split("=");
+    const champ = form.querySelector(`input[name="${nom}"][value="${valeur}"]`);
+    if (champ) { champ.checked = true; maj(); }
+  }
 }
 
 function intensite(eau, bulles) {

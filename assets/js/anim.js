@@ -109,15 +109,23 @@ export function horizontales() {
   document.querySelectorAll("[data-horizontal]").forEach((sec) => {
     const piste = sec.querySelector("[data-piste]");
     if (!piste) return;
+    const barre = sec.querySelector("[data-piste-progres]");
     if (!large()) {
       piste.classList.add("piste--native");
       piste.setAttribute("data-defilement-natif", "");
+      if (barre) {
+        const maj = () => { const m = piste.scrollWidth - piste.clientWidth; barre.style.transform = `scaleX(${m > 0 ? Math.max(0.08, piste.scrollLeft / m) : 1})`; };
+        piste.addEventListener("scroll", maj, { passive: true }); maj();
+      }
       return;
     }
     const distance = () => Math.max(0, piste.scrollWidth - window.innerWidth);
     gsap.to(piste, {
       x: () => -distance(), ease: "none",
-      scrollTrigger: { trigger: sec, start: "top top", end: () => "+=" + distance(), pin: true, scrub: 0.8, invalidateOnRefresh: true },
+      scrollTrigger: {
+        trigger: sec, start: "top top", end: () => "+=" + distance(), pin: true, scrub: 0.8, invalidateOnRefresh: true,
+        onUpdate: (st) => { if (barre) barre.style.transform = `scaleX(${Math.max(0.08, st.progress)})`; },
+      },
     });
     piste.querySelectorAll(".carte__media img").forEach((img) => {
       gsap.fromTo(img, { xPercent: -5, scale: 1.14 }, { xPercent: 5, scale: 1.14, ease: "none", scrollTrigger: { trigger: sec, start: "top top", end: () => "+=" + distance(), scrub: true } });
@@ -139,8 +147,10 @@ export function chrono() {
   const arc = c.querySelector("[data-chrono-arc]");
   const min = c.querySelector("[data-chrono-min]");
   const o = { m: 0 };
-  gsap.timeline({ scrollTrigger: { trigger: c, start: "top 75%", end: "bottom 45%", scrub: 0.6 } })
-    .fromTo(o, { m: 0 }, { m: 50, ease: "none", onUpdate: () => { min.textContent = Math.round(o.m); arc.setAttribute("stroke-dashoffset", (100 - o.m * 2).toFixed(2)); } });
+  const dessiner = () => { min.textContent = Math.round(o.m); arc.setAttribute("stroke-dashoffset", (100 - o.m * 2).toFixed(2)); };
+  dessiner();
+  // Les 50 minutes défilent une fois, quand le chrono arrive à l'écran.
+  ScrollTrigger.create({ trigger: c, start: "top 70%", once: true, onEnter: () => gsap.to(o, { m: 50, duration: 2.6, ease: "power2.inOut", onUpdate: dessiner }) });
   gsap.from(c.querySelectorAll(".chrono__etiquette"), { scale: 0.6, opacity: 0, stagger: 0.15, duration: 0.8, ease: "back.out(2)", scrollTrigger: { trigger: c, start: "top 70%", once: true } });
 }
 
@@ -196,4 +206,16 @@ export function profondeur(eau, bulles) {
     trigger: s, start: "top 50%", end: "bottom 50%",
     onToggle: (st) => { if (st.isActive && label) label.textContent = s.dataset.section; },
   }));
+}
+
+// Textes, listes et blocs d'information apparaissent en douceur au fil de la lecture.
+export function apparitionsTexte() {
+  const cibles = document.querySelectorAll("main .section .texte, main .section .faits li, main .section .question, main .section .labels, main .section .deux-col > .texte, main .rembourse .defile, main .section .bandeau-verif, main .section .sac__liste li, main .section .quiz__q");
+  const liste = [...cibles].filter((el) => !el.closest("[hidden]"));
+  if (!liste.length) return;
+  gsap.set(liste, { opacity: 0, y: 26 });
+  ScrollTrigger.batch(liste, {
+    start: "top 88%", once: true,
+    onEnter: (lot) => gsap.to(lot, { opacity: 1, y: 0, duration: 0.9, ease: "power3.out", stagger: 0.08, overwrite: true }),
+  });
 }

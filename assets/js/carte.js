@@ -61,6 +61,7 @@ export function dessinerCarte(conteneur, { surChoix } = {}) {
   for (const [id, p] of Object.entries(PISCINES)) {
     const [x, y] = projeter(p.lat, p.lon);
     const g = el("g", { class: "pin", tabindex: "0", role: "button", "aria-label": `Piscine de ${p.nom}`, "data-pin": id, transform: `translate(${x.toFixed(1)} ${y.toFixed(1)})` }, svg);
+    el("circle", { class: "pin__zone", r: "24" }, g);
     el("circle", { class: "pin__onde", r: "10" }, g);
     el("circle", { class: "pin__onde", r: "10" }, g);
     el("circle", { class: "pin__point", r: "8" }, g);
@@ -73,6 +74,13 @@ export function dessinerCarte(conteneur, { surChoix } = {}) {
     pins[id] = g;
   }
   conteneur.appendChild(svg);
+  // Sur petit écran, la carte est réduite : on grossit les points pour qu'ils restent visibles.
+  const ajuster = () => {
+    const r = conteneur.clientWidth && conteneur.clientWidth < 520 ? 11 : 8;
+    svg.querySelectorAll(".pin__point").forEach((c) => c.setAttribute("r", r));
+  };
+  ajuster();
+  window.addEventListener("resize", ajuster);
 
   return {
     svg, lac, pins,

@@ -3,7 +3,7 @@ import { creerEau } from "./eau.js";
 import { creerBulles } from "./bulles.js";
 import { creerSon } from "./son.js";
 import { creerGlisse } from "./glisse.js";
-import { entete, copier, curseur, magnetiques, inclinaisons, transitions, ouverture, memoire, finPointeur } from "./ui.js";
+import { entete, copier, curseur, magnetiques, inclinaisons, transitions, ouverture, memoire, finPointeur, barreEssai } from "./ui.js";
 import * as A from "./anim.js";
 import { piscines } from "./piscines.js";
 import { pageHoraires } from "./horaires.js";
@@ -57,6 +57,10 @@ if (boutonCalme) {
   boutonCalme.setAttribute("aria-pressed", String(calme));
   boutonCalme.addEventListener("click", () => {
     memoire.local("aqua-calme", calme ? "0" : "1");
+    // On revient à la même section après le rechargement.
+    const sections = [...document.querySelectorAll("[data-section]")];
+    const i = sections.findIndex((s) => s.getBoundingClientRect().bottom > window.innerHeight * 0.35);
+    memoire.ecrire("aqua-retour", String(Math.max(0, i)));
     location.reload();
   });
 }
@@ -64,6 +68,7 @@ if (boutonCalme) {
 // ---------- Interface commune ----------
 entete(glisse);
 copier();
+barreEssai();
 if (!calme) {
   curseur();
   magnetiques();
@@ -80,8 +85,9 @@ if (page === "pour-qui") pagePourQui(eau, bulles);
 if (gsapOk && !calme) {
   const voile = transitions();
   const entree = ouverture(voile);
-  A.ouvertureHero(entree);
+  A.ouvertureHero(Promise.all([entree, window.__polices]));
   A.titres();
+  A.apparitionsTexte();
   A.parallaxes();
   A.revelations();
   A.gilet();
@@ -91,14 +97,30 @@ if (gsapOk && !calme) {
   A.carteAnim(carte && carte.carte);
   A.vaguePied();
   A.profondeur(eau, bulles);
+  // Les déclencheurs sont recalculés dans l'ordre de la page (sections épinglées comprises).
+  ScrollTrigger.sort();
+  ScrollTrigger.refresh();
 } else {
   html.classList.remove("arrivee", "premiere");
   document.querySelectorAll("[data-piste]").forEach((p) => { p.classList.add("piste--native"); p.setAttribute("data-defilement-natif", ""); });
   document.querySelectorAll("[data-gilet-points] li").forEach((li) => li.classList.add("est-actif"));
 }
 
-// ---------- Ancre à l'arrivée (ex. horaires-tarifs.html#inscription) ----------
+// Les bouées de l'accueil pré-remplissent le questionnaire de la page Pour qui.
+document.addEventListener("click", (e) => {
+  const a = e.target.closest("[data-quiz-pre]");
+  if (a) memoire.ecrire("aqua-quiz", a.dataset.quizPre);
+});
+
+// ---------- Ancre à l'arrivée (ex. horaires-tarifs.html#inscription) ou retour après le mode calme ----------
 function allerAncre() {
+  const retour = memoire.lire("aqua-retour");
+  if (retour !== null && retour !== "") {
+    memoire.ecrire("aqua-retour", "");
+    const s = document.querySelectorAll("[data-section]")[+retour];
+    if (s && +retour > 0) { if (gsapOk) ScrollTrigger.refresh(); window.scrollTo(0, s.getBoundingClientRect().top + window.scrollY); }
+    return;
+  }
   const id = location.hash.slice(1);
   const cible = id && document.getElementById(id);
   if (!cible) return;

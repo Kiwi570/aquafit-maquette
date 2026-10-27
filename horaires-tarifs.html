@@ -6,12 +6,13 @@
 <title>Horaires & tarifs · Aquafit-Aquagym</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Planning des cours d'Aqua-fit dans six piscines de Vaud et Genève, tarifs de la session, calcul au prorata et inscription au cours d'essai offert.">
+<meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#062238">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_CH">
 <meta property="og:title" content="Horaires & tarifs · Aquafit-Aquagym">
 <meta property="og:description" content="Planning des cours d'Aqua-fit dans six piscines de Vaud et Genève, tarifs de la session, calcul au prorata et inscription au cours d'essai offert.">
-<meta property="og:image" content="assets/img/course-eau-profonde-1280.webp">
+<meta property="og:image" content="https://aquafit-maquette.vercel.app/assets/img/course-eau-profonde-1280.webp">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="assets/fonts/InstrumentSerif-Regular.woff" as="font" type="font/woff" crossorigin>
 <link rel="preload" href="assets/fonts/Manrope-var.woff" as="font" type="font/woff" crossorigin>
@@ -22,6 +23,16 @@
   h.classList.add("js");
   try { calme = localStorage.getItem("aqua-calme") === "1"; } catch (e) {}
   if (!calme && window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) calme = true;
+  // Ouverture de page masquée le temps de charger les polices : pas de saut de mise en page.
+  var fin = function () { h.classList.remove("polices"); };
+  if (document.fonts && document.fonts.load) {
+    h.classList.add("polices");
+    window.__polices = Promise.race([
+      Promise.all([document.fonts.load('400 1em "Instrument Serif"'), document.fonts.load('italic 400 1em "Instrument Serif"'), document.fonts.load('600 1em "Manrope"')]),
+      new Promise(function (r) { setTimeout(r, 1400); })
+    ]).then(fin, fin);
+    setTimeout(fin, 2500);
+  }
   if (calme) { h.classList.add("calme"); return; }
   try {
     if (sessionStorage.getItem("aqua-vague") === "1") h.classList.add("arrivee");
@@ -84,14 +95,15 @@
     <a href="index.html" data-nav="accueil">Accueil</a>
     <a href="pour-qui.html" data-nav="pour-qui">Pour qui</a>
     <a href="horaires-tarifs.html" data-nav="horaires">Horaires &amp; tarifs</a>
+    <a href="#contact">Contact</a>
   </nav>
   <div class="entete__outils">
     <button class="outil" type="button" data-son aria-pressed="false" aria-label="Lancer la musique">
-      <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="outil__txt">En musique</span>
+      <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="outil__txt">En musique</span><span class="outil__court" aria-hidden="true">Son</span>
     </button>
     <button class="outil" type="button" data-calme aria-pressed="false">
       <svg class="vague-ico" viewBox="0 0 18 10" aria-hidden="true"><path d="M1 5c2-3 3-3 4 0s2 3 4 0 2-3 4 0 2 3 4 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      <span class="outil__txt">Mode calme</span>
+      <span class="outil__txt">Mode calme</span><span class="outil__court" aria-hidden="true">Calme</span>
     </button>
     <a class="bouton bouton--corail bouton--petit magnet" href="horaires-tarifs.html#inscription"><span class="bouton__txt">Cours d'essai offert</span></a>
     <button class="burger" type="button" data-burger aria-expanded="false" aria-controls="menu-mobile"><span></span><span></span><span class="sr">Menu</span></button>
@@ -106,9 +118,15 @@
   </nav>
   <a class="bouton bouton--corail" href="horaires-tarifs.html#inscription">Réserver mon cours d'essai offert</a>
   <div class="menu-mobile__bas">
-    <span>079 485 04 53 · aussi sur WhatsApp</span>
+    <a class="lien-trace" href="https://wa.me/41794850453" target="_blank" rel="noopener">Écrire sur WhatsApp ↗</a>
+    <span>079 485 04 53</span>
     <span>aquafitaquagym@gmail.com</span>
   </div>
+</div>
+
+<div class="barre-essai" data-barre-essai aria-hidden="true">
+  <a class="bouton bouton--corail" href="horaires-tarifs.html#inscription" tabindex="-1"><span class="bouton__txt">Cours d'essai offert</span></a>
+  <a class="barre-essai__wa" href="https://wa.me/41794850453" target="_blank" rel="noopener" tabindex="-1" aria-label="Écrire sur WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 4v-4h0A2.5 2.5 0 0 1 4 13.5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="8.5" cy="9.5" r="1.1" fill="currentColor"/><circle cx="12" cy="9.5" r="1.1" fill="currentColor"/><circle cx="15.5" cy="9.5" r="1.1" fill="currentColor"/></svg></a>
 </div>
 
 
@@ -148,7 +166,6 @@
       <div class="planning" data-planning>
         <p class="texte">Le planning s'affiche ici.</p>
       </div>
-      <div class="legende-piscines" data-legende></div>
       <div class="planning__detail" data-planning-detail aria-live="polite"></div>
       <p class="bandeau-verif" style="margin-top:20px"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M10 6v5M10 14v.5"/></svg><span>Horaires et prix repris du tableau du site actuel. Leur répartition par piscine et par jour est à confirmer avant la mise en ligne.</span></p>
     </div>
@@ -275,6 +292,7 @@
             </div>
             <label class="case"><input type="checkbox" id="ins-enceinte" name="enceinte"> Je suis enceinte ou en rééducation&nbsp;: j'ai demandé l'avis de mon médecin ou de ma sage-femme.</label>
             <div class="champ"><label for="ins-remarque">Remarque (facultatif)</label><textarea id="ins-remarque" name="remarque"></textarea></div>
+            <p class="note">Vos coordonnées servent uniquement à traiter votre demande. <span class="a-confirmer">politique de confidentialité à compléter (nLPD)</span></p>
           </fieldset>
           <fieldset data-etape="3" hidden>
             <legend>Vérifiez votre demande</legend>
@@ -284,7 +302,7 @@
           <div data-etape="succes" hidden class="succes" tabindex="-1">
             <h3>Demande simulée.</h3>
             <p class="texte">Rien n'a été envoyé&nbsp;: c'est une maquette. En attendant, vous pouvez joindre Salma et Morgane au 079 485 04 53 ou à aquafitaquagym@gmail.com.</p>
-            <div class="actions"><button class="bouton bouton--ligne" type="button" data-recommencer>Recommencer</button></div>
+            <div class="actions"><a class="bouton bouton--corail" href="https://wa.me/41794850453" target="_blank" rel="noopener"><span class="bouton__txt">Écrire sur WhatsApp</span></a><button class="bouton bouton--ligne" type="button" data-recommencer>Recommencer</button></div>
           </div>
           <p class="erreur" data-erreur hidden></p>
           <div class="formulaire__actions" data-nav-etapes>
@@ -326,12 +344,16 @@
       </div>
       <div class="contacts">
         <div class="contact">
-          <div><small>Téléphone et WhatsApp</small><span class="contact__valeur" data-copie-source="tel">079 485 04 53</span></div>
+          <div><small>Téléphone</small><span class="contact__valeur" data-copie-source="tel">079 485 04 53</span></div>
           <button class="copier" type="button" data-copier="tel">Copier</button>
         </div>
         <div class="contact">
           <div><small>E-mail</small><span class="contact__valeur" data-copie-source="mail">aquafitaquagym@gmail.com</span></div>
           <button class="copier" type="button" data-copier="mail">Copier</button>
+        </div>
+        <div class="contact">
+          <div><small>WhatsApp</small><a class="contact__valeur lien-trace" href="https://wa.me/41794850453" target="_blank" rel="noopener">Écrire un message</a></div>
+          <span aria-hidden="true">↗</span>
         </div>
         <div class="contact">
           <div><small>Facebook</small><a class="contact__valeur lien-trace" href="https://www.facebook.com/aquafitaquagym" target="_blank" rel="noopener">facebook.com/aquafitaquagym</a></div>

@@ -52,10 +52,19 @@ float bord(vec2 x, float t) {
   }
   return sqrt(m2) - sqrt(m1);
 }
+float fbm(vec2 p) {
+  float a = 0.5, s = 0.0;
+  for (int i = 0; i < 3; i++) { s += a * noise(p); p = p * 2.03 + 11.7; a *= 0.5; }
+  return s;
+}
+// Réseau lumineux courbe : bords de cellules déformés par un bruit lent, plus un halo doux.
 float caustique(vec2 p, float t, float epaisseur) {
-  p += 0.8 * vec2(noise(p * 0.55 + t * 0.15), noise(p * 0.55 - t * 0.12 + 7.3)) - 0.4;
-  float e = bord(p, t);
-  return 1.0 - smoothstep(0.0, epaisseur, e);
+  vec2 w = vec2(fbm(p * 0.85 + vec2(t * 0.11, -t * 0.07)), fbm(p * 0.85 + vec2(-t * 0.09, t * 0.12) + 4.7));
+  p += (w - 0.5) * 1.7;
+  float e = bord(p, t * 0.7);
+  float ligne = 1.0 - smoothstep(0.0, epaisseur, e);
+  float halo = exp(-e * 10.0) * 0.4;
+  return ligne * ligne + halo;
 }
 
 void main() {
@@ -67,27 +76,26 @@ void main() {
 
   float vitesse = 0.55 + uIntensity * 1.4;
   float t = uTime * vitesse;
-  float echelle = mix(3.2, 4.6, uDepth);
+  float echelle = mix(3.0, 3.8, uDepth);
   float ep = mix(0.10, 0.05, uDepth) + uBeat * 0.03 + uIntensity * 0.05;
 
   float c1 = caustique(p * echelle, t * 0.9, ep);
-  float c2 = caustique(p * echelle * 1.6 + 3.7, t * 1.25, ep * 0.8);
-  float c = c1 * 0.7 + c2 * 0.4;
-  c *= 0.55 + 0.45 * noise(p * 1.3 + t * 0.1);
-  c = pow(c, 2.0);
+  float c2 = caustique(p * echelle * 1.55 + 3.7, t * 1.2, ep * 0.85);
+  float c = c1 * 0.55 + c2 * 0.4 + c1 * c2 * 1.1;
+  c *= 0.45 + 0.75 * fbm(p * 1.1 + t * 0.06);
 
   // Rayons de soleil depuis la surface, plus présents près de la surface.
   float ang = (uv.x - 0.5) * 1.6 + uv.y * 0.35;
   float rayons = noise(vec2(ang * 7.0 + uTime * 0.05, uTime * 0.08));
   rayons = pow(rayons, 3.0) * smoothstep(0.0, 1.0, uv.y) * (1.0 - uDepth) * 0.55;
 
-  float force = mix(0.55, 0.13, uDepth) + uBeat * 0.3 + uIntensity * 0.3;
+  float force = mix(0.55, 0.1, uDepth) + uBeat * 0.3 + uIntensity * 0.32;
   float vignette = smoothstep(1.25, 0.3, length((uv - 0.5) * vec2(aspect * 0.8, 1.0)));
   float trace = flow.b * 0.35;
 
   vec3 lagon = vec3(0.224, 0.776, 0.839);
   vec3 ecume = vec3(0.85, 0.97, 0.98);
-  vec3 col = mix(lagon, ecume, c * 0.5) * c * force * vignette;
+  vec3 col = mix(lagon, ecume, clamp(c * 0.6, 0.0, 1.0)) * c * force * vignette;
   col += lagon * rayons;
   col += lagon * trace * c;
   gl_FragColor = vec4(col, 1.0);

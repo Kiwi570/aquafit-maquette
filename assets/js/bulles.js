@@ -6,9 +6,10 @@ export function creerBulles(canvas) {
   const MAX = 90;
   let w = 0, h = 0, dpr = 1, raf = 0, actif = true;
   let dernierePos = null;
+  let vide = false;
 
   function resize() {
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     w = window.innerWidth; h = window.innerHeight;
     canvas.width = w * dpr; canvas.height = h * dpr;
     canvas.style.width = w + "px"; canvas.style.height = h + "px";
@@ -39,6 +40,8 @@ export function creerBulles(canvas) {
   function boucle() {
     raf = requestAnimationFrame(boucle);
     if (!actif) return;
+    if (!bulles.length && vide) return; // rien à dessiner : on économise la batterie
+    vide = !bulles.length;
     ctx.clearRect(0, 0, w, h);
     for (let i = bulles.length - 1; i >= 0; i--) {
       const b = bulles[i];

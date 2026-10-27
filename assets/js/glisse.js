@@ -5,9 +5,13 @@ export function creerGlisse({ amorti = 0.095 } = {}) {
   const ecouteurs = new Set();
   const max = () => document.documentElement.scrollHeight - window.innerHeight;
 
-  function etape() {
-    courant += (cible - courant) * amorti;
-    if (Math.abs(cible - courant) < 0.4) { courant = cible; enCours = false; }
+  let avant = 0;
+  function etape(now) {
+    // Lissage indépendant de la fréquence d'images : même vitesse à 30, 60 ou 120 images par seconde.
+    const dt = avant ? Math.min(100, now - avant) : 16.7;
+    avant = now;
+    courant += (cible - courant) * (1 - Math.pow(1 - amorti, dt / 16.7));
+    if (Math.abs(cible - courant) < 0.4) { courant = cible; enCours = false; avant = 0; }
     window.scrollTo(0, courant);
     ecouteurs.forEach((f) => f(courant));
     if (enCours) raf = requestAnimationFrame(etape);

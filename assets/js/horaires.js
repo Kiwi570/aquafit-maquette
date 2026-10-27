@@ -18,7 +18,6 @@ function session() {
 function planning() {
   const zone = document.querySelector("[data-planning]");
   const filtres = document.querySelector("[data-filtre-piscines]");
-  const legende = document.querySelector("[data-legende]");
   const detail = document.querySelector("[data-planning-detail]");
   if (!zone) return;
   const n = maintenantSuisse();
@@ -34,7 +33,7 @@ function planning() {
     // Deux cours trop proches se rangent sur deux rangées pour ne pas se chevaucher.
     const fins = [];
     const rangs = cours.map((c) => {
-      const d = enMinutes(c.d), f = Math.max(enMinutes(c.f), d + 62);
+      const d = enMinutes(c.d), f = Math.max(enMinutes(c.f), d + 70);
       let r = fins.findIndex((x) => x <= d);
       if (r === -1) { r = fins.length; fins.push(f); } else fins[r] = f;
       return r;
@@ -50,15 +49,15 @@ function planning() {
       const larg = Math.max(pos(enMinutes(c.f)) - pos(enMinutes(c.d)), 5.5);
       html += `<button type="button" class="cours${prochain ? " est-prochain" : ""}" data-cours="${idCours(c)}" data-piscine="${c.p}"
         style="left:${pos(enMinutes(c.d))}%;width:${larg}%;top:${haut}%;--c:${p.couleur}" aria-label="${libelle(c)}${prochain ? ", prochain cours" : ""}">
-        <i aria-hidden="true"></i>${heure(c.d)}</button>`;
+        <i aria-hidden="true"></i><span class="cours__txt"><b>${heure(c.d)}</b><small>${p.court}</small></span></button>`;
     });
     html += "</div></div>";
   }
   zone.innerHTML = html;
 
   const ids = ["tous", ...Object.keys(PISCINES)];
-  filtres.innerHTML = ids.map((id) => `<button type="button" class="puce" data-filtre="${id}" aria-pressed="${id === "tous"}">${id === "tous" ? "Toutes" : PISCINES[id].nom}</button>`).join("");
-  legende.innerHTML = Object.entries(PISCINES).map(([, p]) => `<span><i style="--c:${p.couleur}"></i>${p.nom}</span>`).join("");
+  // Les filtres servent aussi de légende : chaque piscine garde sa couleur.
+  filtres.innerHTML = ids.map((id) => `<button type="button" class="puce${id === "tous" ? "" : " puce--couleur"}" data-filtre="${id}" aria-pressed="${id === "tous"}"${id === "tous" ? "" : ` style="--c:${PISCINES[id].couleur}"`}>${id === "tous" ? "Toutes" : `<i aria-hidden="true"></i>${PISCINES[id].nom}`}</button>`).join("");
 
   const appliquer = (id) => {
     filtre = id;
@@ -166,12 +165,15 @@ function tarifs() {
         </div>
       </div></article>`;
   }).join("");
+  zone.querySelectorAll(".tarif__face--dos").forEach((f) => { f.inert = true; });
   zone.addEventListener("click", (e) => {
     const b = e.target.closest(".tarif__retourner");
     if (!b) return;
     const carte = b.closest("[data-tarif]");
     const retourne = carte.classList.toggle("est-retourne");
     carte.querySelectorAll(".tarif__retourner").forEach((x) => x.setAttribute("aria-expanded", String(retourne)));
+    carte.querySelector(".tarif__face:not(.tarif__face--dos)").inert = retourne;
+    carte.querySelector(".tarif__face--dos").inert = !retourne;
     const cible = carte.querySelector(retourne ? ".tarif__face--dos .tarif__retourner" : ".tarif__face:not(.tarif__face--dos) .tarif__retourner");
     setTimeout(() => cible.focus({ preventScroll: true }), 300);
   });

@@ -10,6 +10,17 @@ export { memoire };
 
 export const finPointeur = () => window.matchMedia("(pointer: fine)").matches;
 
+// Deux adresses désignent-elles la même page ? (« horaires-tarifs.html », « /horaires-tarifs », « / », « index.html »…)
+export function cheminNormalise(u) {
+  let p = u.pathname.replace(/\/index(\.html)?$/, "/").replace(/\.html$/, "");
+  if (p.length > 1 && p.endsWith("/")) p = p.slice(0, -1);
+  return p || "/";
+}
+export function memePage(href) {
+  try { const u = new URL(href, location.href); return u.origin === location.origin && cheminNormalise(u) === cheminNormalise(location); }
+  catch (e) { return false; }
+}
+
 export function entete(glisse) {
   const h = document.querySelector("[data-entete]");
   if (!h) return;
@@ -23,31 +34,61 @@ export function entete(glisse) {
   const burger = document.querySelector("[data-burger]");
   const menu = document.querySelector("[data-menu]");
   if (burger && menu) {
-    const fermer = () => { menu.hidden = true; burger.setAttribute("aria-expanded", "false"); document.body.classList.remove("menu-ouvert"); };
+    const html = document.documentElement;
+    const focusables = () => [burger, ...menu.querySelectorAll("a, button")];
+    const fermer = (rendreFocus) => {
+      if (menu.hidden) return;
+      menu.hidden = true;
+      burger.setAttribute("aria-expanded", "false");
+      burger.setAttribute("aria-label", "Ouvrir le menu");
+      html.classList.remove("menu-ouvert");
+      glisse && glisse.activer(true);
+      if (rendreFocus) burger.focus();
+    };
+    burger.setAttribute("aria-label", "Ouvrir le menu");
     burger.addEventListener("click", () => {
-      const ouvrir = menu.hidden;
-      menu.hidden = !ouvrir;
-      burger.setAttribute("aria-expanded", String(ouvrir));
-      document.body.classList.toggle("menu-ouvert", ouvrir);
-      if (ouvrir && window.gsap && !document.documentElement.classList.contains("calme")) {
+      if (!menu.hidden) { fermer(false); return; }
+      menu.hidden = false;
+      burger.setAttribute("aria-expanded", "true");
+      burger.setAttribute("aria-label", "Fermer le menu");
+      html.classList.add("menu-ouvert");
+      glisse && glisse.activer(false);
+      if (window.gsap && !html.classList.contains("calme")) {
         gsap.fromTo(menu, { clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)", duration: 0.7, ease: "expo.out" });
         gsap.fromTo(menu.querySelectorAll("nav a"), { yPercent: 60, opacity: 0 }, { yPercent: 0, opacity: 1, stagger: 0.06, duration: 0.7, ease: "expo.out", delay: 0.1, overwrite: true });
       }
+      setTimeout(() => menu.querySelector("nav a")?.focus(), 60);
     });
-    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !menu.hidden) { fermer(); burger.focus(); } });
-    menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", fermer));
+    document.addEventListener("keydown", (e) => {
+      if (menu.hidden) return;
+      if (e.key === "Escape") { fermer(true); return; }
+      if (e.key === "Tab") {
+        // Le focus reste dans le menu ouvert.
+        const f = focusables(), i = f.indexOf(document.activeElement);
+        if (e.shiftKey && i <= 0) { e.preventDefault(); f[f.length - 1].focus(); }
+        else if (!e.shiftKey && i === f.length - 1) { e.preventDefault(); f[0].focus(); }
+      }
+    });
+    menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => fermer(false)));
+    window.matchMedia("(min-width: 961px)").addEventListener("change", (m) => { if (m.matches) fermer(false); });
   }
 
-  // Ancres internes : défilement fluide.
+  // Liens vers la page en cours (ancre ou non) : défilement fluide au lieu d'un rechargement.
   document.addEventListener("click", (e) => {
-    const a = e.target.closest('a[href^="#"]');
-    if (!a) return;
-    const id = a.getAttribute("href").slice(1);
-    const cible = id && document.getElementById(id);
-    if (!cible) return;
+    const a = e.target.closest("a[href]");
+    if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || a.target === "_blank") return;
+    const href = a.getAttribute("href");
+    if (!href.startsWith("#") && !memePage(href)) return;
+    const id = new URL(href, location.href).hash.slice(1);
+    const cible = id ? document.getElementById(id) : null;
+    if (id && !cible) return;
     e.preventDefault();
-    glisse ? glisse.vers(cible, { decalage: -90 }) : cible.scrollIntoView();
-    history.replaceState(null, "", "#" + id);
+    if (cible) {
+      glisse ? glisse.vers(cible, { decalage: -90 }) : cible.scrollIntoView();
+      history.replaceState(null, "", "#" + id);
+    } else {
+      glisse ? glisse.vers(0) : window.scrollTo(0, 0);
+    }
   });
 }
 
@@ -177,9 +218,7 @@ export function transitions() {
     const a = e.target.closest("a[href]");
     if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || a.target === "_blank" || calme()) return;
     const href = a.getAttribute("href");
-    if (!/^[\w-]+\.html(#[\w-]+)?$/.test(href)) return;
-    const [fichier] = href.split("#");
-    if (location.pathname.endsWith("/" + fichier) && href.includes("#")) return;
+    if (!/^[\w-]+\.html(#[\w-]+)?$/.test(href) || memePage(href)) return;
     e.preventDefault();
     memoire.ecrire("aqua-vague", "1");
     await balayer(v, { de: 1.15, a: -0.15, depuisHaut: false, duree: 0.85 });
@@ -224,4 +263,29 @@ export async function ouverture(v) {
   await balayer(v, { de: 1.15, a: -0.2, depuisHaut: true, surface: true, duree: 1.0 });
   intro.classList.remove("est-visible");
   v.svg.classList.remove("est-visible", "est-surface");
+}
+
+// Barre « Cours d'essai offert » (téléphone, tablette) : visible après l'ouverture de page,
+// masquée sur l'inscription, le pied de page et quand le menu est ouvert.
+export function barreEssai() {
+  const barre = document.querySelector("[data-barre-essai]");
+  if (!barre) return;
+  const liens = barre.querySelectorAll("a");
+  const zones = [...document.querySelectorAll("#inscription, .pied")];
+  const visibles = new Set();
+  const maj = () => {
+    const montrer = window.scrollY > window.innerHeight * 0.6 && visibles.size === 0;
+    barre.classList.toggle("est-visible", montrer);
+    barre.setAttribute("aria-hidden", String(!montrer));
+    liens.forEach((a) => a.setAttribute("tabindex", montrer ? "0" : "-1"));
+  };
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver((entrees) => {
+      entrees.forEach((e) => (e.isIntersecting ? visibles.add(e.target) : visibles.delete(e.target)));
+      maj();
+    }, { rootMargin: "0px 0px -10% 0px" });
+    zones.forEach((z) => io.observe(z));
+  }
+  window.addEventListener("scroll", maj, { passive: true });
+  maj();
 }

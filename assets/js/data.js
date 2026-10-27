@@ -22,12 +22,12 @@ export const CONTACT = {
 
 // Coordonnées approximatives, pour placer les piscines sur la carte stylisée.
 export const PISCINES = {
-  cheserex: { nom: "Chéserex", lieu: "Piscine intercommunale Asse et Boiron", adresse: "Ch. des Grands Vignes 9, 1275 Chéserex", adresseOk: true, canton: "Vaud", lat: 46.4005, lon: 6.1735, couleur: "#39C6D6", entree: "Entrée de la piscine non comprise", duree: 50 },
-  nyon: { nom: "Nyon", lieu: "Piscine du Rocher", adresse: "Adresse à compléter", adresseOk: false, canton: "Vaud", lat: 46.3830, lon: 6.2390, couleur: "#9BE6EE", entree: "Entrée de la piscine comprise", duree: 50 },
-  bassins: { nom: "Bassins", lieu: "Piscine de Bassins", adresse: "Adresse à compléter", adresseOk: false, canton: "Vaud", lat: 46.4620, lon: 6.2330, couleur: "#7FD8B4", entree: "Entrée de la piscine comprise", duree: 50 },
-  coppet: { nom: "Coppet", lieu: "Piscine des Rojalets", adresse: "Adresse à confirmer", adresseOk: false, canton: "Vaud", lat: 46.3150, lon: 6.1870, couleur: "#FFB86B", entree: "Entrée de la piscine à confirmer", duree: 45 },
-  chandieu: { nom: "Genève · Chandieu", lieu: "Piscine de Chandieu", adresse: "Adresse à compléter", adresseOk: false, canton: "Genève", lat: 46.2236, lon: 6.1340, couleur: "#FF8E78", entree: "Entrée de la piscine comprise", duree: 50 },
-  paquis: { nom: "Genève · Pâquis-Centre", lieu: "Piscine de Pâquis-Centre", adresse: "Adresse à compléter", adresseOk: false, canton: "Genève", lat: 46.2135, lon: 6.1445, couleur: "#C9A7FF", entree: "Entrée de la piscine comprise", duree: 50 },
+  cheserex: { nom: "Chéserex", court: "Chéserex", lieu: "Piscine intercommunale Asse et Boiron", adresse: "Ch. des Grands Vignes 9, 1275 Chéserex", adresseOk: true, canton: "Vaud", lat: 46.4005, lon: 6.1735, couleur: "#39C6D6", entree: "Entrée de la piscine non comprise", duree: 50 },
+  nyon: { nom: "Nyon", court: "Nyon", lieu: "Piscine du Rocher", adresse: "Adresse à compléter", adresseOk: false, canton: "Vaud", lat: 46.3830, lon: 6.2390, couleur: "#9BE6EE", entree: "Entrée de la piscine comprise", duree: 50 },
+  bassins: { nom: "Bassins", court: "Bassins", lieu: "Piscine de Bassins", adresse: "Adresse à compléter", adresseOk: false, canton: "Vaud", lat: 46.4620, lon: 6.2330, couleur: "#7FD8B4", entree: "Entrée de la piscine comprise", duree: 50 },
+  coppet: { nom: "Coppet", court: "Coppet", lieu: "Piscine des Rojalets", adresse: "Adresse à confirmer", adresseOk: false, canton: "Vaud", lat: 46.3150, lon: 6.1870, couleur: "#FFB86B", entree: "Entrée de la piscine à confirmer", duree: 45 },
+  chandieu: { nom: "Genève · Chandieu", court: "Chandieu", lieu: "Piscine de Chandieu", adresse: "Adresse à compléter", adresseOk: false, canton: "Genève", lat: 46.2236, lon: 6.1340, couleur: "#FF8E78", entree: "Entrée de la piscine comprise", duree: 50 },
+  paquis: { nom: "Genève · Pâquis-Centre", court: "Pâquis", lieu: "Piscine de Pâquis-Centre", adresse: "Adresse à compléter", adresseOk: false, canton: "Genève", lat: 46.2135, lon: 6.1445, couleur: "#C9A7FF", entree: "Entrée de la piscine comprise", duree: 50 },
 };
 
 export const JOURS = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
