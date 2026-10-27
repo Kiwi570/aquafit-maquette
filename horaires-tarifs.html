@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Horaires & tarifs · Aquafit-Aquagym</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Planning des cours d'Aqua-fit dans six piscines de Vaud et Genève, tarifs de la session, calcul au prorata et inscription au cours d'essai offert.">
+<meta name="theme-color" content="#062238">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_CH">
+<meta property="og:title" content="Horaires & tarifs · Aquafit-Aquagym">
+<meta property="og:description" content="Planning des cours d'Aqua-fit dans six piscines de Vaud et Genève, tarifs de la session, calcul au prorata et inscription au cours d'essai offert.">
+<meta property="og:image" content="assets/img/course-eau-profonde-1280.webp">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="assets/fonts/InstrumentSerif-Regular.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="assets/fonts/Manrope-var.woff" as="font" type="font/woff" crossorigin>
+<link rel="stylesheet" href="assets/css/site.css">
+<script>
+(function () {
+  var h = document.documentElement, calme = false;
+  h.classList.add("js");
+  try { calme = localStorage.getItem("aqua-calme") === "1"; } catch (e) {}
+  if (!calme && window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) calme = true;
+  if (calme) { h.classList.add("calme"); return; }
+  try {
+    if (sessionStorage.getItem("aqua-vague") === "1") h.classList.add("arrivee");
+    else if (sessionStorage.getItem("aqua-intro") !== "1") h.classList.add("premiere");
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="page-horaires-tarifs">
+
+<a class="evitement" href="#contenu">Aller au contenu</a>
+
+<svg class="voile" data-voile aria-hidden="true" preserveAspectRatio="none">
+  <defs>
+    <linearGradient id="voile-eau" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#39C6D6"/>
+      <stop offset="0.35" stop-color="#0A3350"/>
+      <stop offset="1" stop-color="#031421"/>
+    </linearGradient>
+  </defs>
+  <path data-voile-path d=""/>
+  <path data-voile-ecume d="" fill="none"/>
+</svg>
+
+<div class="intro" data-intro aria-hidden="true">
+  <img class="intro__logo" src="assets/img/logo-aquafit.webp" alt="" width="800" height="449">
+  <svg class="intro__ligne" viewBox="0 0 1200 40" preserveAspectRatio="none">
+    <path d="M0 20 C 50 8 100 8 150 20 S 250 32 300 20 S 400 8 450 20 S 550 32 600 20 S 700 8 750 20 S 850 32 900 20 S 1000 8 1050 20 S 1150 32 1200 20"/>
+  </svg>
+  <p class="intro__txt">Aqua-fit en eau profonde</p>
+</div>
+
+<canvas class="eau" data-eau aria-hidden="true"></canvas>
+<canvas class="bulles" data-bulles aria-hidden="true"></canvas>
+
+<div class="curseur" data-curseur aria-hidden="true"><span class="curseur__bulle"></span><span class="curseur__txt" data-curseur-txt></span></div>
+
+<div class="jauge" data-jauge aria-hidden="true">
+  <span class="jauge__titre">Profondeur</span>
+  <div class="jauge__rail" data-jauge-rail><i class="jauge__repere" data-jauge-repere></i></div>
+  <span class="jauge__label" data-jauge-label>Surface</span>
+</div>
+
+<svg class="filtres" width="0" height="0" aria-hidden="true" focusable="false">
+  <filter id="onde-emerge" x="-5%" y="-5%" width="110%" height="110%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.008 0.025" numOctaves="2" seed="4" result="bruit"/>
+    <feDisplacementMap data-onde-emerge in="SourceGraphic" in2="bruit" scale="0" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+  <filter id="onde-survol" x="-5%" y="-5%" width="110%" height="110%">
+    <feTurbulence data-onde-survol-bruit type="fractalNoise" baseFrequency="0.01 0.04" numOctaves="1" seed="9" result="bruit"/>
+    <feDisplacementMap data-onde-survol in="SourceGraphic" in2="bruit" scale="0" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<header class="entete" data-entete>
+  <a class="entete__logo" href="index.html" aria-label="Aquafit-Aquagym, accueil" data-curseur-actif>
+    <img src="assets/img/logo-aquafit.webp" alt="Aquafit" width="800" height="449">
+  </a>
+  <nav class="entete__nav" aria-label="Navigation principale">
+    <a href="index.html" data-nav="accueil">Accueil</a>
+    <a href="pour-qui.html" data-nav="pour-qui">Pour qui</a>
+    <a href="horaires-tarifs.html" data-nav="horaires">Horaires &amp; tarifs</a>
+  </nav>
+  <div class="entete__outils">
+    <button class="outil" type="button" data-son aria-pressed="false" aria-label="Lancer la musique">
+      <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="outil__txt">En musique</span>
+    </button>
+    <button class="outil" type="button" data-calme aria-pressed="false">
+      <svg class="vague-ico" viewBox="0 0 18 10" aria-hidden="true"><path d="M1 5c2-3 3-3 4 0s2 3 4 0 2-3 4 0 2 3 4 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span class="outil__txt">Mode calme</span>
+    </button>
+    <a class="bouton bouton--corail bouton--petit magnet" href="horaires-tarifs.html#inscription"><span class="bouton__txt">Cours d'essai offert</span></a>
+    <button class="burger" type="button" data-burger aria-expanded="false" aria-controls="menu-mobile"><span></span><span></span><span class="sr">Menu</span></button>
+  </div>
+</header>
+
+<div class="menu-mobile" id="menu-mobile" data-menu hidden>
+  <nav aria-label="Navigation mobile">
+    <a href="index.html" data-nav="accueil">Accueil</a>
+    <a href="pour-qui.html" data-nav="pour-qui">Pour qui</a>
+    <a href="horaires-tarifs.html" data-nav="horaires">Horaires &amp; tarifs</a>
+  </nav>
+  <a class="bouton bouton--corail" href="horaires-tarifs.html#inscription">Réserver mon cours d'essai offert</a>
+  <div class="menu-mobile__bas">
+    <span>079 485 04 53 · aussi sur WhatsApp</span>
+    <span>aquafitaquagym@gmail.com</span>
+  </div>
+</div>
+
+
+<main id="contenu">
+
+  <section class="hero hero--page" data-section="Surface" data-hero>
+    <div class="hero__media parallax-img" data-parallax="0.18">
+      <picture><source media="(max-width: 700px)" srcset="assets/img/horaires-hero-mobile-640.webp 640w, assets/img/horaires-hero-mobile-784.webp 784w" sizes="100vw"><img src="assets/img/horaires-hero-1168.webp" srcset="assets/img/horaires-hero-640.webp 640w, assets/img/horaires-hero-1168.webp 1168w" sizes="100vw" alt="Sous l'eau, une ligne de nage file vers le fond du bassin" loading="eager" fetchpriority="high" decoding="async" ></picture>
+    </div>
+    <div class="wrap hero__contenu">
+      <span class="session" data-apparition data-session><b>Session août – décembre 2026</b><span data-session-txt>en cours depuis le lundi 17 août</span></span>
+      <h1 class="titre-geant hero__titre" data-titre-flottant>Horaires <em>&amp; tarifs.</em></h1>
+      <div class="hero__bas">
+        <p class="chapo" data-apparition>Six piscines, du lundi au samedi. Choisissez votre créneau, calculez le prix de votre abonnement et réservez votre cours d'essai offert.</p>
+        <div class="hero__actions" data-apparition>
+          <a class="bouton bouton--corail magnet" href="#inscription"><span class="bouton__txt">Réserver mon cours d'essai</span></a>
+          <a class="bouton bouton--ligne magnet" href="#calcul"><span class="bouton__txt">Calculer mon prix</span></a>
+        </div>
+      </div>
+    </div>
+    <span class="hero__defiler" aria-hidden="true">Plonger<i></i></span>
+  </section>
+
+  <!-- Planning -->
+  <section class="section" id="planning" data-section="Planning">
+    <div class="wrap">
+      <div class="deux-col">
+        <div class="pile pile--serre">
+          <span class="surtitre">Le planning</span>
+          <h2 class="titre-xl" data-titre>Une ligne d'eau <em>par jour.</em></h2>
+        </div>
+        <p class="texte">Chaque bouée est un cours. Touchez-en une pour voir la piscine, la durée et le prix de l'abonnement. Le prochain cours est signalé en corail.</p>
+      </div>
+      <div class="filtres" role="group" aria-label="Filtrer le planning">
+        <div class="filtres__ligne"><span class="filtres__titre">Piscine</span><div class="liste-piscines" data-filtre-piscines></div></div>
+      </div>
+      <div class="planning" data-planning>
+        <p class="texte">Le planning s'affiche ici.</p>
+      </div>
+      <div class="legende-piscines" data-legende></div>
+      <div class="planning__detail" data-planning-detail aria-live="polite"></div>
+      <p class="bandeau-verif" style="margin-top:20px"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M10 6v5M10 14v.5"/></svg><span>Horaires et prix repris du tableau du site actuel. Leur répartition par piscine et par jour est à confirmer avant la mise en ligne.</span></p>
+    </div>
+  </section>
+
+  <!-- Carte -->
+  <section class="section section--serree" id="piscines" data-section="Piscines">
+    <div class="wrap">
+      <div class="deux-col" style="margin-bottom:clamp(32px,5vw,64px)">
+        <div class="pile pile--serre">
+          <span class="surtitre">Les piscines</span>
+          <h2 class="titre-xl" data-titre>Où se <em>retrouver&nbsp;?</em></h2>
+        </div>
+        <p class="texte">Chaque piscine a ses jours et ses horaires. Choisissez-en une sur la carte pour voir ses créneaux.</p>
+      </div>
+      <div class="piscines__grille">
+        <div class="carte-leman" data-carte>
+          <img src="assets/img/bassin-lignes-dessus-1168.webp" srcset="assets/img/bassin-lignes-dessus-640.webp 640w, assets/img/bassin-lignes-dessus-1168.webp 1168w" sizes="(max-width: 900px) 100vw, 55vw" alt="" loading="lazy" decoding="async" >
+        </div>
+        <div class="pile">
+          <div class="prochain" data-prochain hidden>
+            <span class="prochain__pouls" aria-hidden="true"></span>
+            <span><small>Prochain cours</small><strong data-prochain-txt></strong></span>
+          </div>
+          <div class="fiche" data-fiche aria-live="polite">
+            <p class="fiche__lieu">Six piscines</p>
+            <p class="texte">Chéserex, Nyon, Bassins, Coppet, Genève Chandieu et Genève Pâquis-Centre.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Calculateur -->
+  <section class="section" id="calcul" data-section="Prorata">
+    <div class="wrap">
+      <div class="deux-col" style="margin-bottom:clamp(32px,5vw,64px)">
+        <div class="pile pile--serre">
+          <span class="surtitre">En cours de session</span>
+          <h2 class="titre-xl" data-titre>Vous payez <em>les séances restantes.</em></h2>
+        </div>
+        <p class="texte">La session a commencé&nbsp;? Vous pouvez la rejoindre s'il reste de la place. Le prix est calculé au prorata des séances qui restent.</p>
+      </div>
+      <div class="calc">
+        <div class="calc__visuel reveal-img" data-revele>
+          <img src="assets/img/eau-agitee-1168.webp" srcset="assets/img/eau-agitee-640.webp 640w, assets/img/eau-agitee-1168.webp 1168w" sizes="(max-width: 900px) 100vw, 40vw" alt="" loading="lazy" decoding="async" >
+        </div>
+        <form class="calc__panneau" data-calc>
+          <div class="champ">
+            <label for="calc-cours">Votre cours</label>
+            <select id="calc-cours" data-calc-cours></select>
+          </div>
+          <div class="resultats">
+            <div class="resultat"><small>Séances de la session</small><b data-calc-total>16</b></div>
+            <div class="resultat"><small>Séances restantes</small><b data-calc-restantes>–</b></div>
+            <div class="resultat resultat--fort"><small>Prix au prorata</small><b data-calc-prix>–</b></div>
+          </div>
+          <p class="note" data-calc-note>Estimation à partir du lundi 17 août, sans déduire les vacances scolaires. Le montant exact est confirmé à l'inscription.</p>
+          <div class="actions"><a class="bouton bouton--corail magnet" href="#inscription" data-calc-inscrire><span class="bouton__txt">S'inscrire à ce cours</span></a></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tarifs -->
+  <section class="section section--serree" id="tarifs" data-section="Tarifs">
+    <div class="wrap">
+      <div class="deux-col" style="margin-bottom:clamp(32px,5vw,56px)">
+        <div class="pile pile--serre">
+          <span class="surtitre">Tarifs de la session</span>
+          <h2 class="titre-xl" data-titre>Un abonnement <em>par créneau.</em></h2>
+        </div>
+        <p class="texte">L'abonnement couvre la session pour un créneau choisi. Retournez une carte pour voir ce qui est compris.</p>
+      </div>
+      <div class="tarifs" data-tarifs></div>
+      <div class="deux-col" style="margin-top:clamp(32px,5vw,56px);align-items:center">
+        <p class="texte"><strong>Remboursement.</strong> Plusieurs caisses complémentaires participent à une partie de l'abonnement grâce au label qualité du cours. L'attestation de cours se remplit soi-même.</p>
+        <div class="actions"><span class="bouton bouton--ligne" aria-disabled="true"><span class="bouton__txt">Attestation de cours</span></span><span class="a-confirmer" style="align-self:center">PDF à fournir</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Inscription -->
+  <section class="section" id="inscription" data-section="Inscription">
+    <div class="wrap">
+      <div class="deux-col" style="margin-bottom:clamp(32px,5vw,56px)">
+        <div class="pile pile--serre">
+          <span class="surtitre">Inscription</span>
+          <h2 class="titre-xl" data-titre>Trois étapes <em>avant de plonger.</em></h2>
+        </div>
+        <p class="texte">Demandez votre cours d'essai offert ou inscrivez-vous directement à la session. Places limitées.</p>
+      </div>
+      <div class="inscription">
+        <div class="niveau" data-niveau>
+          <img src="assets/img/sac-bord-bassin-1168.webp" srcset="assets/img/sac-bord-bassin-640.webp 640w, assets/img/sac-bord-bassin-1168.webp 1168w" sizes="(max-width: 900px) 100vw, 40vw" alt="Au bord du bassin, un linge plié, des sandales et un cadenas" loading="lazy" decoding="async" >
+          <div class="niveau__eau" data-niveau-eau></div>
+          <ol class="niveau__etapes" style="list-style:none;margin:0;padding:0">
+            <li class="niveau__etape est-active" data-niveau-etape="1"><i>1</i>Le cours</li>
+            <li class="niveau__etape" data-niveau-etape="2"><i>2</i>Vos coordonnées</li>
+            <li class="niveau__etape" data-niveau-etape="3"><i>3</i>Vérification</li>
+          </ol>
+        </div>
+        <form class="formulaire" data-inscription novalidate>
+          <fieldset data-etape="1">
+            <legend>Que souhaitez-vous&nbsp;?</legend>
+            <div class="choix">
+              <label><input type="radio" name="formule" id="formule-essai" value="essai" checked><b>Cours d'essai</b><span>offert, pour découvrir</span></label>
+              <label><input type="radio" name="formule" id="formule-session" value="session"><b>Abonnement</b><span>pour la session en cours</span></label>
+            </div>
+            <div class="champ">
+              <label for="ins-cours">Piscine et créneau</label>
+              <select id="ins-cours" data-ins-cours></select>
+            </div>
+          </fieldset>
+          <fieldset data-etape="2" hidden>
+            <legend>Vos coordonnées</legend>
+            <div class="champs-2">
+              <div class="champ"><label for="ins-prenom">Prénom</label><input type="text" id="ins-prenom" name="prenom" autocomplete="given-name" required></div>
+              <div class="champ"><label for="ins-nom">Nom</label><input type="text" id="ins-nom" name="nom" autocomplete="family-name" required></div>
+            </div>
+            <div class="champs-2">
+              <div class="champ"><label for="ins-email">E-mail</label><input type="email" id="ins-email" name="email" autocomplete="email" required></div>
+              <div class="champ"><label for="ins-tel">Téléphone</label><input type="tel" id="ins-tel" name="tel" autocomplete="tel" placeholder="079 000 00 00"></div>
+            </div>
+            <label class="case"><input type="checkbox" id="ins-enceinte" name="enceinte"> Je suis enceinte ou en rééducation&nbsp;: j'ai demandé l'avis de mon médecin ou de ma sage-femme.</label>
+            <div class="champ"><label for="ins-remarque">Remarque (facultatif)</label><textarea id="ins-remarque" name="remarque"></textarea></div>
+          </fieldset>
+          <fieldset data-etape="3" hidden>
+            <legend>Vérifiez votre demande</legend>
+            <dl class="recap" data-recap></dl>
+            <p class="note">Maquette&nbsp;: aucune donnée n'est envoyée. Sur le site en ligne, la demande arrivera par e-mail à Salma et Morgane.</p>
+          </fieldset>
+          <div data-etape="succes" hidden class="succes" tabindex="-1">
+            <h3>Demande simulée.</h3>
+            <p class="texte">Rien n'a été envoyé&nbsp;: c'est une maquette. En attendant, vous pouvez joindre Salma et Morgane au 079 485 04 53 ou à aquafitaquagym@gmail.com.</p>
+            <div class="actions"><button class="bouton bouton--ligne" type="button" data-recommencer>Recommencer</button></div>
+          </div>
+          <p class="erreur" data-erreur hidden></p>
+          <div class="formulaire__actions" data-nav-etapes>
+            <button class="bouton bouton--ligne" type="button" data-precedent hidden>Retour</button>
+            <button class="bouton bouton--corail" type="submit" data-suivant>Continuer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="remontee" data-section="Remontée" style="min-height:min(90svh,900px)">
+    <div class="remontee__media parallax-img" data-parallax="0.12">
+      <picture><source media="(max-width: 700px)" srcset="assets/img/soleil-sous-surface-mobile-640.webp 640w, assets/img/soleil-sous-surface-mobile-784.webp 784w" sizes="100vw"><img src="assets/img/soleil-sous-surface-1168.webp" srcset="assets/img/soleil-sous-surface-640.webp 640w, assets/img/soleil-sous-surface-1168.webp 1168w" sizes="100vw" alt="Vu de sous l'eau, le soleil traverse la surface" loading="lazy" decoding="async" ></picture>
+    </div>
+    <div class="wrap remontee__contenu">
+      <span class="surtitre">Pas encore décidé&nbsp;?</span>
+      <h2 class="titre-geant" data-titre>Essayez, <em>c'est offert.</em></h2>
+      <div class="remontee__actions">
+        <a class="bouton bouton--corail magnet" href="#inscription"><span class="bouton__txt">Réserver mon cours d'essai</span></a>
+        <a class="bouton bouton--ligne magnet" href="pour-qui.html"><span class="bouton__txt">Est-ce pour moi&nbsp;?</span></a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pied" id="contact" data-section="Surface">
+  <svg class="pied__vague" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path data-pied-vague d="M0 50 C 180 20 360 20 540 50 S 900 80 1080 50 S 1350 25 1440 45 V90 H0Z"/></svg>
+  <div class="pied__corps"><div class="wrap">
+    <div class="pied__haut">
+      <div class="pile">
+        <span class="surtitre" style="color:#0E7F8C">Contact</span>
+        <h2 class="pied__titre">Une question avant <em>de plonger&nbsp;?</em></h2>
+        <p style="color:#3D5A6C;max-width:30em">Salma Charmey et Morgane Broye répondent par téléphone, par WhatsApp ou par e-mail. Pour l'inscription, le formulaire en ligne reste le plus simple.</p>
+        <div class="actions">
+          <a class="bouton bouton--corail magnet" href="horaires-tarifs.html#inscription"><span class="bouton__txt">S'inscrire en ligne</span></a>
+        </div>
+      </div>
+      <div class="contacts">
+        <div class="contact">
+          <div><small>Téléphone et WhatsApp</small><span class="contact__valeur" data-copie-source="tel">079 485 04 53</span></div>
+          <button class="copier" type="button" data-copier="tel">Copier</button>
+        </div>
+        <div class="contact">
+          <div><small>E-mail</small><span class="contact__valeur" data-copie-source="mail">aquafitaquagym@gmail.com</span></div>
+          <button class="copier" type="button" data-copier="mail">Copier</button>
+        </div>
+        <div class="contact">
+          <div><small>Facebook</small><a class="contact__valeur lien-trace" href="https://www.facebook.com/aquafitaquagym" target="_blank" rel="noopener">facebook.com/aquafitaquagym</a></div>
+          <span aria-hidden="true">↗</span>
+        </div>
+      </div>
+    </div>
+    <div class="pied__bas">
+      <img class="pied__logo" src="assets/img/logo-aquafit.webp" alt="Aquafit-Aquagym" width="800" height="449">
+      <nav aria-label="Pied de page">
+        <a class="lien-trace" href="index.html">Accueil</a>
+        <a class="lien-trace" href="pour-qui.html">Pour qui</a>
+        <a class="lien-trace" href="horaires-tarifs.html">Horaires &amp; tarifs</a>
+      </nav>
+      <span>© 2026 Aquafit-Aquagym · Vaud &amp; Genève</span>
+      <span class="maquette-note">Maquette · contenus à valider · mentions légales à compléter</span>
+    </div>
+  </div></div>
+</footer>
+
+<script src="assets/js/vendor/gsap.min.js" defer></script>
+<script src="assets/js/vendor/ScrollTrigger.min.js" defer></script>
+<script src="assets/js/vendor/SplitText.min.js" defer></script>
+<script type="module" src="assets/js/main.js"></script>
+</body>
+</html>
+

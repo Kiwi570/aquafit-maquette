@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aquafit-Aquagym</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Cours d'Aqua-fit en eau profonde et en musique, avec gilet en néoprène, dans six piscines des cantons de Vaud et Genève. Cours d'essai offert.">
+<meta name="theme-color" content="#062238">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_CH">
+<meta property="og:title" content="Aquafit-Aquagym">
+<meta property="og:description" content="Cours d'Aqua-fit en eau profonde et en musique, avec gilet en néoprène, dans six piscines des cantons de Vaud et Genève. Cours d'essai offert.">
+<meta property="og:image" content="assets/img/course-eau-profonde-1280.webp">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="assets/fonts/InstrumentSerif-Regular.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="assets/fonts/Manrope-var.woff" as="font" type="font/woff" crossorigin>
+<link rel="stylesheet" href="assets/css/site.css">
+<script>
+(function () {
+  var h = document.documentElement, calme = false;
+  h.classList.add("js");
+  try { calme = localStorage.getItem("aqua-calme") === "1"; } catch (e) {}
+  if (!calme && window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) calme = true;
+  if (calme) { h.classList.add("calme"); return; }
+  try {
+    if (sessionStorage.getItem("aqua-vague") === "1") h.classList.add("arrivee");
+    else if (sessionStorage.getItem("aqua-intro") !== "1") h.classList.add("premiere");
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="page-accueil">
+
+<a class="evitement" href="#contenu">Aller au contenu</a>
+
+<svg class="voile" data-voile aria-hidden="true" preserveAspectRatio="none">
+  <defs>
+    <linearGradient id="voile-eau" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#39C6D6"/>
+      <stop offset="0.35" stop-color="#0A3350"/>
+      <stop offset="1" stop-color="#031421"/>
+    </linearGradient>
+  </defs>
+  <path data-voile-path d=""/>
+  <path data-voile-ecume d="" fill="none"/>
+</svg>
+
+<div class="intro" data-intro aria-hidden="true">
+  <img class="intro__logo" src="assets/img/logo-aquafit.webp" alt="" width="800" height="449">
+  <svg class="intro__ligne" viewBox="0 0 1200 40" preserveAspectRatio="none">
+    <path d="M0 20 C 50 8 100 8 150 20 S 250 32 300 20 S 400 8 450 20 S 550 32 600 20 S 700 8 750 20 S 850 32 900 20 S 1000 8 1050 20 S 1150 32 1200 20"/>
+  </svg>
+  <p class="intro__txt">Aqua-fit en eau profonde</p>
+</div>
+
+<canvas class="eau" data-eau aria-hidden="true"></canvas>
+<canvas class="bulles" data-bulles aria-hidden="true"></canvas>
+
+<div class="curseur" data-curseur aria-hidden="true"><span class="curseur__bulle"></span><span class="curseur__txt" data-curseur-txt></span></div>
+
+<div class="jauge" data-jauge aria-hidden="true">
+  <span class="jauge__titre">Profondeur</span>
+  <div class="jauge__rail" data-jauge-rail><i class="jauge__repere" data-jauge-repere></i></div>
+  <span class="jauge__label" data-jauge-label>Surface</span>
+</div>
+
+<svg class="filtres" width="0" height="0" aria-hidden="true" focusable="false">
+  <filter id="onde-emerge" x="-5%" y="-5%" width="110%" height="110%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.008 0.025" numOctaves="2" seed="4" result="bruit"/>
+    <feDisplacementMap data-onde-emerge in="SourceGraphic" in2="bruit" scale="0" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+  <filter id="onde-survol" x="-5%" y="-5%" width="110%" height="110%">
+    <feTurbulence data-onde-survol-bruit type="fractalNoise" baseFrequency="0.01 0.04" numOctaves="1" seed="9" result="bruit"/>
+    <feDisplacementMap data-onde-survol in="SourceGraphic" in2="bruit" scale="0" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<header class="entete" data-entete>
+  <a class="entete__logo" href="index.html" aria-label="Aquafit-Aquagym, accueil" data-curseur-actif>
+    <img src="assets/img/logo-aquafit.webp" alt="Aquafit" width="800" height="449">
+  </a>
+  <nav class="entete__nav" aria-label="Navigation principale">
+    <a href="index.html" data-nav="accueil">Accueil</a>
+    <a href="pour-qui.html" data-nav="pour-qui">Pour qui</a>
+    <a href="horaires-tarifs.html" data-nav="horaires">Horaires &amp; tarifs</a>
+  </nav>
+  <div class="entete__outils">
+    <button class="outil" type="button" data-son aria-pressed="false" aria-label="Lancer la musique">
+      <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="outil__txt">En musique</span>
+    </button>
+    <button class="outil" type="button" data-calme aria-pressed="false">
+      <svg class="vague-ico" viewBox="0 0 18 10" aria-hidden="true"><path d="M1 5c2-3 3-3 4 0s2 3 4 0 2-3 4 0 2 3 4 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span class="outil__txt">Mode calme</span>
+    </button>
+    <a class="bouton bouton--corail bouton--petit magnet" href="horaires-tarifs.html#inscription"><span class="bouton__txt">Cours d'essai offert</span></a>
+    <button class="burger" type="button" data-burger aria-expanded="false" aria-controls="menu-mobile"><span></span><span></span><span class="sr">Menu</span></button>
+  </div>
+</header>
+
+<div class="menu-mobile" id="menu-mobile" data-menu hidden>
+  <nav aria-label="Navigation mobile">
+    <a href="index.html" data-nav="accueil">Accueil</a>
+    <a href="pour-qui.html" data-nav="pour-qui">Pour qui</a>
+    <a href="horaires-tarifs.html" data-nav="horaires">Horaires &amp; tarifs</a>
+  </nav>
+  <a class="bouton bouton--corail" href="horaires-tarifs.html#inscription">Réserver mon cours d'essai offert</a>
+  <div class="menu-mobile__bas">
+    <span>079 485 04 53 · aussi sur WhatsApp</span>
+    <span>aquafitaquagym@gmail.com</span>
+  </div>
+</div>
+
+
+<main id="contenu">
+
+  <!-- Ouverture -->
+  <section class="hero" data-section="Surface" data-hero>
+    <div class="hero__media parallax-img" data-parallax="0.18">
+      <picture><source media="(max-width: 700px)" srcset="assets/img/accueil-hero-mobile-640.webp 640w, assets/img/accueil-hero-mobile-784.webp 784w" sizes="100vw"><img src="assets/img/course-eau-profonde-1280.webp" srcset="assets/img/course-eau-profonde-640.webp 640w, assets/img/course-eau-profonde-1280.webp 1280w, assets/img/course-eau-profonde-1920.webp 1920w, assets/img/course-eau-profonde-2560.webp 2560w" sizes="100vw" alt="Sous l'eau, des participantes courent en eau profonde, portées par leur gilet" loading="eager" fetchpriority="high" decoding="async" ></picture>
+    </div>
+    <div class="wrap hero__contenu">
+      <span class="surtitre" data-apparition>Aqua-fit en eau profonde · Vaud &amp; Genève</span>
+      <h1 class="titre-geant hero__titre" data-titre-flottant>Venez courir <em>en musique.</em></h1>
+      <div class="hero__bas">
+        <p class="chapo" data-apparition>Une gymnastique aquatique complète, en eau profonde, portée par un gilet en néoprène. Pas besoin de savoir nager&nbsp;: chacun avance à son rythme.</p>
+        <div class="hero__actions" data-apparition>
+          <a class="bouton bouton--corail magnet" href="horaires-tarifs.html#inscription"><span class="bouton__txt">Réserver mon cours d'essai offert</span></a>
+          <a class="bouton bouton--ligne magnet" href="horaires-tarifs.html"><span class="bouton__txt">Voir les horaires</span></a>
+        </div>
+      </div>
+      <dl class="hero__infos" data-apparition>
+        <div><dt>Session en cours</dt><dd data-session-court>Août – décembre 2026</dd></div>
+        <div><dt>Six piscines</dt><dd>De Genève à Bassins</dd></div>
+        <div><dt>Une séance</dt><dd>50 minutes, en musique</dd></div>
+      </dl>
+    </div>
+    <span class="hero__defiler" aria-hidden="true">Plonger<i></i></span>
+  </section>
+
+  <!-- Eau profonde + gilet -->
+  <section class="section gilet" data-section="Le gilet" data-gilet>
+    <div class="wrap gilet__grille">
+      <div>
+        <span class="surtitre">Qu'est-ce que l'Aqua-fit&nbsp;?</span>
+        <h2 class="titre-xl" data-titre>On court <em>sans toucher le fond.</em></h2>
+        <p class="texte" style="margin-top:22px">L'Aqua-fit est une gymnastique aquatique qui se pratique en eau profonde. Le gilet vous maintient dans une bonne position&nbsp;: vous travaillez tout le corps, au rythme de la musique.</p>
+        <ol class="gilet__points" data-gilet-points>
+          <li class="est-actif" data-etape="1">
+            <span class="pastille" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M8 3l4 3 4-3 3 3-1 5v9H6v-9L5 6z"/><path d="M12 6v14"/></svg></span>
+            <span><strong>Le gilet vous porte</strong>Un gilet de flottaison en néoprène, prêté pendant les cours.</span>
+          </li>
+          <li data-etape="2">
+            <span class="pastille" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="7" r="3.5"/><path d="M2 14c2.5-2 4-2 6 0s4 2 6 0 4-2 6 0"/></svg></span>
+            <span><strong>La tête reste hors de l'eau</strong>C'est l'une des rares activités aquatiques où savoir nager n'est pas indispensable.</span>
+          </li>
+          <li data-etape="3">
+            <span class="pastille" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 3v15M6 13l6 6 6-6"/><path d="M3 21h18" stroke-dasharray="2 3"/></svg></span>
+            <span><strong>Pas d'appui au fond</strong>Les mouvements se font en suspension&nbsp;: tout le corps travaille, sans choc pour les articulations.</span>
+          </li>
+        </ol>
+      </div>
+      <div class="gilet__visuel">
+        <div class="gilet__scene" data-gilet-scene>
+          <img src="assets/img/eau-profonde-fond-1168.webp" srcset="assets/img/eau-profonde-fond-640.webp 640w, assets/img/eau-profonde-fond-1168.webp 1168w" sizes="(max-width: 900px) 100vw, 50vw" alt="" loading="lazy" decoding="async" >
+          <svg class="gilet__schema" viewBox="0 0 400 500" role="img" aria-label="Schéma : une personne flotte en eau profonde grâce au gilet, la tête hors de l'eau, les pieds loin du fond du bassin">
+            <defs>
+              <linearGradient id="g-air" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2F7F6" stop-opacity=".9"/><stop offset="1" stop-color="#9BE6EE" stop-opacity=".55"/></linearGradient>
+            </defs>
+            <path d="M0 0 H400 V112 C 360 100 330 124 290 112 S 220 100 180 112 S 110 124 70 112 S 20 104 0 112 Z" fill="url(#g-air)"/>
+            <path data-schema-surface d="M0 112 C 20 104 40 104 70 112 S 140 124 180 112 S 250 100 290 112 S 360 124 400 112" fill="none" stroke="#F2F7F6" stroke-width="2.5"/>
+            <text class="schema-txt" x="20" y="40" style="fill:#062238">Surface</text>
+            <!-- Fond du bassin -->
+            <g data-etape-schema="3" opacity=".35">
+              <path d="M0 472 H400" stroke="#9BE6EE" stroke-width="2"/>
+              <path d="M0 486 H400 M0 472 L0 500 M50 472 V500 M100 472 V500 M150 472 V500 M200 472 V500 M250 472 V500 M300 472 V500 M350 472 V500" stroke="#9BE6EE" stroke-width="1" opacity=".5"/>
+              <path d="M206 328 V460" stroke="#FF6A4D" stroke-width="2" stroke-dasharray="5 7" data-schema-fleche/>
+              <path d="M198 452 L206 464 L214 452" fill="none" stroke="#FF6A4D" stroke-width="2"/>
+              <text class="schema-txt" x="192" y="396" text-anchor="end">Le fond</text>
+              <text class="schema-txt" x="192" y="412" text-anchor="end">reste loin</text>
+            </g>
+            <!-- Personne -->
+            <g data-schema-corps>
+              <g data-jambe="g"><path d="M196 222 L180 270 L192 318" fill="none" stroke="#F2F7F6" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/></g>
+              <g data-jambe="d"><path d="M212 222 L232 262 L222 312" fill="none" stroke="#F2F7F6" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/></g>
+              <path d="M182 142 L150 176 L136 150" fill="none" stroke="#F2F7F6" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" data-bras="g"/>
+              <path d="M226 142 L258 170 L276 146" fill="none" stroke="#F2F7F6" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" data-bras="d"/>
+              <rect x="180" y="128" width="48" height="100" rx="20" fill="#F2F7F6"/>
+              <g data-etape-schema="1">
+                <path d="M176 132 Q204 116 232 132 L236 206 Q204 220 172 206 Z" fill="#062238" stroke="#39C6D6" stroke-width="3"/>
+                <path d="M204 126 V214" stroke="#39C6D6" stroke-width="1.5" opacity=".6"/>
+              </g>
+              <circle cx="204" cy="94" r="20" fill="#F2F7F6"/>
+            </g>
+            <!-- Étiquettes -->
+            <g data-etape-schema="1">
+              <path d="M240 176 H300" stroke="#39C6D6" stroke-width="1.5"/>
+              <circle cx="240" cy="176" r="4" fill="#39C6D6"/>
+              <text class="schema-txt" x="306" y="172">Gilet</text>
+              <text class="schema-txt" x="306" y="188">néoprène</text>
+            </g>
+            <g data-etape-schema="2" opacity=".35">
+              <path d="M112 84 H182" stroke="#062238" stroke-width="1.5"/>
+              <circle cx="182" cy="84" r="4" fill="#062238"/>
+              <text class="schema-txt" x="20" y="80" style="fill:#062238">Tête hors</text>
+              <text class="schema-txt" x="20" y="96" style="fill:#062238">de l'eau</text>
+            </g>
+          </svg>
+        </div>
+        <figure class="gilet__photo" style="margin:0">
+          <img src="assets/img/dos-gilet-eau-profonde-1280.webp" srcset="assets/img/dos-gilet-eau-profonde-640.webp 640w, assets/img/dos-gilet-eau-profonde-1280.webp 1280w, assets/img/dos-gilet-eau-profonde-1920.webp 1920w" sizes="(max-width: 900px) 40vw, 22vw" alt="Une participante en eau profonde, de dos, avec son gilet et ses gants" loading="lazy" decoding="async" >
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bienfaits -->
+  <section class="section horizontal" data-section="Bienfaits" data-horizontal>
+    <div class="wrap horizontal__tete">
+      <div class="pile pile--serre">
+        <span class="surtitre">Un entraînement complet</span>
+        <h2 class="titre-xl" data-titre>Tout le corps <em>travaille.</em></h2>
+      </div>
+      <p class="texte">La résistance naturelle de l'eau rend chaque mouvement plus riche&nbsp;: renforcement, cardio, souplesse et coordination dans la même séance.</p>
+    </div>
+    <div class="piste" data-piste>
+      <article class="carte" data-tilt data-curseur-texte="Plonger">
+        <div class="carte__inner">
+          <div class="carte__media"><img src="assets/img/dos-gilet-eau-profonde-1280.webp" srcset="assets/img/dos-gilet-eau-profonde-640.webp 640w, assets/img/dos-gilet-eau-profonde-1280.webp 1280w, assets/img/dos-gilet-eau-profonde-1920.webp 1920w" sizes="(max-width: 700px) 80vw, 30vw" alt="Participante en eau profonde, vue de dos" loading="lazy" decoding="async" ></div>
+          <span class="carte__num">Muscles</span>
+          <div class="carte__legende"><h3>Renforcement</h3><p>Fessiers, cuisses, abdominaux, bras&nbsp;: tout travaille contre la résistance de l'eau, sans impact sur les articulations.</p></div>
+        </div>
+      </article>
+      <article class="carte" data-tilt data-curseur-texte="Plonger">
+        <div class="carte__inner">
+          <div class="carte__media"><img src="assets/img/groupe-course-dessous-765.webp" srcset="assets/img/groupe-course-dessous-640.webp 640w, assets/img/groupe-course-dessous-765.webp 765w" sizes="(max-width: 700px) 80vw, 30vw" alt="Groupe qui court en eau profonde, vu depuis le fond" loading="lazy" decoding="async" ></div>
+          <span class="carte__num">Cœur</span>
+          <div class="carte__legende"><h3>Cardio en musique</h3><p>La course dans l'eau est un vrai travail d'endurance, mené en douceur et en rythme.</p></div>
+        </div>
+      </article>
+      <article class="carte" data-tilt data-curseur-texte="Plonger">
+        <div class="carte__inner">
+          <div class="carte__media"><img src="assets/img/marche-ceinture-dessous-744.webp" srcset="assets/img/marche-ceinture-dessous-640.webp 640w, assets/img/marche-ceinture-dessous-744.webp 744w" sizes="(max-width: 700px) 80vw, 30vw" alt="Vue sous l'eau d'une participante qui marche en eau profonde" loading="lazy" decoding="async" ></div>
+          <span class="carte__num">Coordination</span>
+          <div class="carte__legende"><h3>Force et mobilité</h3><p>Une même séance fait travailler la force, la mobilité et la coordination.</p></div>
+        </div>
+      </article>
+      <article class="carte" data-tilt data-curseur-texte="Plonger">
+        <div class="carte__inner">
+          <div class="carte__media"><img src="assets/img/nage-palmes-dessus-1280.webp" srcset="assets/img/nage-palmes-dessus-640.webp 640w, assets/img/nage-palmes-dessus-1280.webp 1280w, assets/img/nage-palmes-dessus-1920.webp 1920w" sizes="(max-width: 700px) 80vw, 30vw" alt="Jambes en mouvement dans l'eau, vues du dessus" loading="lazy" decoding="async" ></div>
+          <span class="carte__num">Circulation</span>
+          <div class="carte__legende"><h3>Jambes légères</h3><p>L'effet massant de l'eau est très apprécié pour la sensation de jambes plus légères.</p></div>
+        </div>
+      </article>
+      <article class="carte" data-tilt data-curseur-texte="Plonger">
+        <div class="carte__inner">
+          <div class="carte__media"><img src="assets/img/bord-bassin-gilet-1280.webp" srcset="assets/img/bord-bassin-gilet-640.webp 640w, assets/img/bord-bassin-gilet-1280.webp 1280w, assets/img/bord-bassin-gilet-1920.webp 1920w" sizes="(max-width: 700px) 80vw, 30vw" alt="Participante assise au bord du bassin, gilet et accessoires à côté d'elle" loading="lazy" decoding="async" ></div>
+          <span class="carte__num">Moral</span>
+          <div class="carte__legende"><h3>Bon pour la tête</h3><p>Un cours rythmé par la musique, bénéfique pour le physique comme pour le moral.</p></div>
+        </div>
+      </article>
+      <article class="carte" data-tilt data-curseur-texte="Plonger">
+        <div class="carte__inner">
+          <div class="carte__media"><img src="assets/img/halteres-mousse-bord-1080.webp" srcset="assets/img/halteres-mousse-bord-640.webp 640w, assets/img/halteres-mousse-bord-1080.webp 1080w" sizes="(max-width: 700px) 80vw, 30vw" alt="Haltères en mousse posées au bord de la piscine" loading="lazy" decoding="async" ></div>
+          <span class="carte__num">Intensité</span>
+          <div class="carte__legende"><h3>À votre rythme</h3><p>Les accessoires restent facultatifs. C'est vous qui décidez de l'intensité de vos mouvements.</p></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Séance -->
+  <section class="section" data-section="La séance" data-seance>
+    <div class="wrap seance__grille">
+      <div class="chrono" data-chrono>
+        <svg viewBox="0 0 400 400" aria-hidden="true">
+          <circle class="chrono__fond" cx="200" cy="200" r="170"/>
+          <g class="chrono__graduation" data-graduation></g>
+          <circle class="chrono__arc" cx="200" cy="200" r="170" transform="rotate(-90 200 200)" data-chrono-arc pathLength="100" stroke-dasharray="100 100" stroke-dashoffset="0"/>
+        </svg>
+        <div class="chrono__centre"><span class="chrono__min" data-chrono-min>50</span><span class="chrono__unite">minutes</span></div>
+        <span class="chrono__etiquette">Course</span>
+        <span class="chrono__etiquette">Renforcement</span>
+        <span class="chrono__etiquette">Assouplissement</span>
+      </div>
+      <div>
+        <span class="surtitre">Une séance</span>
+        <h2 class="titre-xl" data-titre>Cinquante minutes <em>en suspension.</em></h2>
+        <p class="texte" style="margin-top:22px">Pendant le cours, on travaille toutes les parties du corps avec plusieurs techniques&nbsp;: la course, le renforcement musculaire et l'assouplissement.</p>
+        <ul class="faits">
+          <li><b>50 min</b><span>par séance, 45&nbsp;min à la piscine des Rojalets</span></li>
+          <li><b>En musique</b><span>c'est la musique qui donne le rythme du cours</span></li>
+          <li><b>Gilet prêté</b><span>ou le vôtre, à acheter neuf à l'inscription</span></li>
+          <li><b>Rattrapages</b><span>un cours manqué se rattrape pendant la session</span></li>
+        </ul>
+        <figure class="seance__photo reveal-img" style="margin-top:32px" data-revele>
+          <img src="assets/img/video-course-sous-eau-1280.webp" srcset="assets/img/video-course-sous-eau-640.webp 640w, assets/img/video-course-sous-eau-1280.webp 1280w, assets/img/video-course-sous-eau-1629.webp 1629w" sizes="(max-width: 900px) 100vw, 45vw" alt="Sous l'eau, une participante court entre les lignes du bassin" loading="lazy" decoding="async" >
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pour qui -->
+  <section class="section section--serree" data-section="Pour qui">
+    <div class="wrap">
+      <div class="bassin" data-bassin>
+        <img src="assets/img/groupe-vu-du-dessus-1168.webp" srcset="assets/img/groupe-vu-du-dessus-640.webp 640w, assets/img/groupe-vu-du-dessus-1168.webp 1168w" sizes="100vw" alt="Vu du dessus, un petit groupe court en cercle dans un couloir de piscine" loading="lazy" decoding="async" >
+        <div class="bouees" data-bouees>
+          <a class="bouee" href="pour-qui.html#profils" style="left:8%;top:12%"><i aria-hidden="true"></i>Non-nageurs</a>
+          <a class="bouee" href="pour-qui.html#profils" style="left:52%;top:9%"><i aria-hidden="true"></i>Femmes enceintes</a>
+          <a class="bouee" href="pour-qui.html#profils" style="left:70%;top:30%"><i aria-hidden="true"></i>Sportifs</a>
+          <a class="bouee" href="pour-qui.html#profils" style="left:26%;top:30%"><i aria-hidden="true"></i>Reprise en douceur</a>
+          <a class="bouee" href="pour-qui.html#profils" style="left:60%;top:50%"><i aria-hidden="true"></i>Jeunes et moins jeunes</a>
+        </div>
+        <div class="bassin__texte">
+          <span class="surtitre">Pour qui&nbsp;?</span>
+          <h2 class="titre-xl" data-titre>L'Aqua-fit <em>pour tous.</em></h2>
+          <p class="texte" style="color:var(--texte)">Sportifs confirmés ou débutants, jeunes ou moins jeunes, nageurs ou non&nbsp;: tout le monde s'entraîne ensemble, chacun selon son objectif.</p>
+          <div class="actions"><a class="bouton bouton--clair magnet" href="pour-qui.html#quiz"><span class="bouton__txt">Est-ce pour moi&nbsp;?</span></a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Piscines -->
+  <section class="section" data-section="Piscines" id="piscines">
+    <div class="wrap">
+      <div class="deux-col" style="margin-bottom:clamp(32px,5vw,64px)">
+        <div class="pile pile--serre">
+          <span class="surtitre">Où nager&nbsp;?</span>
+          <h2 class="titre-xl" data-titre>Six piscines, <em>de Genève à Bassins.</em></h2>
+        </div>
+        <p class="texte">Choisissez la piscine la plus proche&nbsp;: chaque point de la carte affiche ses jours et ses horaires. Le prochain cours est signalé en corail.</p>
+      </div>
+      <div class="piscines__grille">
+        <div class="carte-leman" data-carte>
+          <img src="assets/img/bassin-lignes-dessus-1168.webp" srcset="assets/img/bassin-lignes-dessus-640.webp 640w, assets/img/bassin-lignes-dessus-1168.webp 1168w" sizes="(max-width: 900px) 100vw, 55vw" alt="" loading="lazy" decoding="async" >
+        </div>
+        <div class="pile">
+          <div class="prochain" data-prochain hidden>
+            <span class="prochain__pouls" aria-hidden="true"></span>
+            <span><small>Prochain cours</small><strong data-prochain-txt></strong></span>
+          </div>
+          <div class="fiche" data-fiche aria-live="polite">
+            <p class="fiche__lieu">Chéserex, Nyon, Bassins, Coppet et Genève</p>
+            <p class="texte">Piscines de Chéserex (Asse et Boiron), du Rocher à Nyon, de Bassins, des Rojalets à Coppet, de Chandieu et de Pâquis-Centre à Genève.</p>
+          </div>
+          <p class="bandeau-verif"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M10 6v5M10 14v.5"/></svg><span>Horaires repris du site actuel&nbsp;: la répartition par piscine est à confirmer avant la mise en ligne.</span></p>
+          <a class="bouton bouton--ligne magnet" href="horaires-tarifs.html#planning" style="justify-self:start"><span class="bouton__txt">Tout le planning</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Équipe -->
+  <section class="section" data-section="L'équipe">
+    <div class="wrap equipe__grille">
+      <div class="portraits">
+        <figure class="portrait">
+          <div class="portrait__cadre" data-emerge><img src="assets/img/monitrice-a-1280.webp" srcset="assets/img/monitrice-a-640.webp 640w, assets/img/monitrice-a-1280.webp 1280w, assets/img/monitrice-a-1920.webp 1920w" sizes="(max-width: 900px) 50vw, 26vw" alt="Monitrice d'Aqua-fit souriante, au bord du bassin avec son gilet" loading="lazy" decoding="async" ></div>
+          <figcaption>Monitrice <span class="a-confirmer">nom à attribuer</span></figcaption>
+        </figure>
+        <figure class="portrait">
+          <div class="portrait__cadre" data-emerge><img src="assets/img/monitrice-b-1280.webp" srcset="assets/img/monitrice-b-640.webp 640w, assets/img/monitrice-b-1280.webp 1280w, assets/img/monitrice-b-1920.webp 1920w" sizes="(max-width: 900px) 50vw, 26vw" alt="Monitrice d'Aqua-fit assise au bord de la piscine, lunettes de soleil sur la tête" loading="lazy" decoding="async" ></div>
+          <figcaption>Monitrice <span class="a-confirmer">nom à attribuer</span></figcaption>
+        </figure>
+      </div>
+      <div class="pile">
+        <span class="surtitre">L'équipe</span>
+        <h2 class="titre-xl" data-titre>Salma &amp; Morgane, <em>dans l'eau avec vous.</em></h2>
+        <p class="texte">Dynamiques, enthousiastes et sportives accomplies, Salma Charmey et Morgane Broye sont instructrices diplômées en Aquafitness ESA. Elles tiennent compte des besoins et des capacités de chacun pour encourager sa progression.</p>
+        <p class="texte"><strong>Salma</strong> enseigne l'Aqua-fit depuis plus de 25&nbsp;ans dans la région de La Côte et à Genève <span class="a-confirmer">15 ou 25 ans&nbsp;?</span></p>
+        <p class="texte"><strong>Morgane</strong> pratique l'aquafitness depuis plus de 10&nbsp;ans et s'est formée pour enseigner en 2020.</p>
+        <div class="labels">
+          <span class="label">Instructrices diplômées ESA</span>
+          <span class="label">Label qualité Qualitop / QualiCert <span class="a-confirmer">nom exact</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Remboursement -->
+  <section class="section rembourse" data-section="Remboursement">
+    <img src="assets/img/carrelage-mosaique-1168.webp" srcset="assets/img/carrelage-mosaique-640.webp 640w, assets/img/carrelage-mosaique-1168.webp 1168w" sizes="100vw" alt="" loading="lazy" decoding="async" >
+    <div class="wrap rembourse__grille">
+      <div class="pile pile--serre">
+        <span class="surtitre">Remboursement</span>
+        <h2 class="titre-xl" data-titre>Votre caisse <em>peut participer.</em></h2>
+      </div>
+      <div class="pile pile--serre">
+        <p class="texte">Grâce au label qualité, le cours est reconnu par plusieurs caisses complémentaires, qui prennent en charge une partie de l'abonnement selon votre contrat. Renseignez-vous auprès de la vôtre.</p>
+        <div class="actions">
+          <span class="bouton bouton--ligne" aria-disabled="true"><span class="bouton__txt">Attestation de cours</span></span>
+          <span class="a-confirmer" style="align-self:center">PDF à fournir</span>
+        </div>
+      </div>
+    </div>
+    <div class="defile" aria-label="Caisses complémentaires citées sur le site actuel">
+      <div class="defile__piste">
+        <span>Concordia</span><span>AXA</span><span>Helsana</span><span>Progrès</span><span>Groupe Mutuel</span><span>CSS</span><span>Wincare</span><span>Swica</span><span>Sanitas</span><span>Atupri</span><span>ÖKK</span><span>Provita</span>
+        <span aria-hidden="true">Concordia</span><span aria-hidden="true">AXA</span><span aria-hidden="true">Helsana</span><span aria-hidden="true">Progrès</span><span aria-hidden="true">Groupe Mutuel</span><span aria-hidden="true">CSS</span><span aria-hidden="true">Wincare</span><span aria-hidden="true">Swica</span><span aria-hidden="true">Sanitas</span><span aria-hidden="true">Atupri</span><span aria-hidden="true">ÖKK</span><span aria-hidden="true">Provita</span>
+      </div>
+    </div>
+    <div class="wrap" style="margin-top:18px"><p class="note">Liste reprise du site actuel, à mettre à jour avec les caisses qui remboursent aujourd'hui <span class="a-confirmer">à vérifier</span></p></div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" data-section="Questions">
+    <div class="wrap faq__grille">
+      <div class="pile">
+        <span class="surtitre">Questions fréquentes</span>
+        <h2 class="titre-xl" data-titre>Avant <em>le premier cours.</em></h2>
+        <figure class="reveal-img" style="margin:12px 0 0;border-radius:var(--rayon);overflow:hidden;aspect-ratio:4/3" data-revele>
+          <img src="assets/img/surface-reflets-1168.webp" srcset="assets/img/surface-reflets-640.webp 640w, assets/img/surface-reflets-1168.webp 1168w" sizes="(max-width: 900px) 100vw, 32vw" alt="" loading="lazy" decoding="async" >
+        </figure>
+      </div>
+      <div class="faq__liste">
+        <details class="question" open>
+          <summary>Faut-il savoir nager&nbsp;?<i aria-hidden="true"></i></summary>
+          <div class="question__reponse"><p>Non. Il vaut mieux être à l'aise dans l'eau, mais le gilet ou la ceinture de flottaison vous maintient pour faire les exercices en toute sécurité.</p></div>
+        </details>
+        <details class="question">
+          <summary>Que dois-je apporter&nbsp;?<i aria-hidden="true"></i></summary>
+          <div class="question__reponse"><ul><li>un maillot de bain</li><li>un linge</li><li>des sandales de piscine</li><li>un cadenas pour vos objets de valeur</li></ul></div>
+        </details>
+        <details class="question">
+          <summary>Puis-je faire un cours d'essai&nbsp;?<i aria-hidden="true"></i></summary>
+          <div class="question__reponse"><p>Oui, pour découvrir l'activité avant de vous inscrire à une session. Le cours d'essai est offert.</p></div>
+        </details>
+        <details class="question">
+          <summary>Et pendant la grossesse&nbsp;?<i aria-hidden="true"></i></summary>
+          <div class="question__reponse"><p>Les femmes enceintes peuvent suivre les cours, sauf contre-indication du médecin ou de la sage-femme qui les suit. Demandez leur avis avant de commencer.</p></div>
+        </details>
+        <details class="question">
+          <summary>Puis-je rattraper un cours manqué&nbsp;?<i aria-hidden="true"></i></summary>
+          <div class="question__reponse"><p>Oui, à n'importe quel moment de la session en cours, selon les places disponibles. Pas besoin de le faire dans la même semaine.</p></div>
+        </details>
+        <details class="question">
+          <summary>Puis-je commencer en cours de session&nbsp;?<i aria-hidden="true"></i></summary>
+          <div class="question__reponse"><p>Oui, dans la limite des places. Le prix est alors calculé au prorata des séances restantes. <a class="lien-trace" href="horaires-tarifs.html#calcul" style="color:var(--lagon)">Faire le calcul</a></p></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Remontée -->
+  <section class="remontee" data-section="Remontée">
+    <div class="remontee__media parallax-img" data-parallax="0.12">
+      <picture><source media="(max-width: 700px)" srcset="assets/img/soleil-sous-surface-mobile-640.webp 640w, assets/img/soleil-sous-surface-mobile-784.webp 784w" sizes="100vw"><img src="assets/img/soleil-sous-surface-1168.webp" srcset="assets/img/soleil-sous-surface-640.webp 640w, assets/img/soleil-sous-surface-1168.webp 1168w" sizes="100vw" alt="Vu de sous l'eau, le soleil traverse la surface de la piscine" loading="lazy" decoding="async" ></picture>
+    </div>
+    <div class="wrap remontee__contenu">
+      <span class="surtitre">Remonter à la surface</span>
+      <h2 class="titre-geant" data-titre>Le premier cours <em>est offert.</em></h2>
+      <p class="chapo">Venez essayer avant de vous inscrire. Un maillot, un linge, des sandales et un cadenas&nbsp;: le gilet, on vous le prête.</p>
+      <div class="remontee__actions">
+        <a class="bouton bouton--corail magnet" href="horaires-tarifs.html#inscription"><span class="bouton__txt">Réserver mon cours d'essai</span></a>
+        <a class="bouton bouton--ligne magnet" href="horaires-tarifs.html#planning"><span class="bouton__txt">Voir les horaires</span></a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pied" id="contact" data-section="Surface">
+  <svg class="pied__vague" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path data-pied-vague d="M0 50 C 180 20 360 20 540 50 S 900 80 1080 50 S 1350 25 1440 45 V90 H0Z"/></svg>
+  <div class="pied__corps"><div class="wrap">
+    <div class="pied__haut">
+      <div class="pile">
+        <span class="surtitre" style="color:#0E7F8C">Contact</span>
+        <h2 class="pied__titre">Une question avant <em>de plonger&nbsp;?</em></h2>
+        <p style="color:#3D5A6C;max-width:30em">Salma Charmey et Morgane Broye répondent par téléphone, par WhatsApp ou par e-mail. Pour l'inscription, le formulaire en ligne reste le plus simple.</p>
+        <div class="actions">
+          <a class="bouton bouton--corail magnet" href="horaires-tarifs.html#inscription"><span class="bouton__txt">S'inscrire en ligne</span></a>
+        </div>
+      </div>
+      <div class="contacts">
+        <div class="contact">
+          <div><small>Téléphone et WhatsApp</small><span class="contact__valeur" data-copie-source="tel">079 485 04 53</span></div>
+          <button class="copier" type="button" data-copier="tel">Copier</button>
+        </div>
+        <div class="contact">
+          <div><small>E-mail</small><span class="contact__valeur" data-copie-source="mail">aquafitaquagym@gmail.com</span></div>
+          <button class="copier" type="button" data-copier="mail">Copier</button>
+        </div>
+        <div class="contact">
+          <div><small>Facebook</small><a class="contact__valeur lien-trace" href="https://www.facebook.com/aquafitaquagym" target="_blank" rel="noopener">facebook.com/aquafitaquagym</a></div>
+          <span aria-hidden="true">↗</span>
+        </div>
+      </div>
+    </div>
+    <div class="pied__bas">
+      <img class="pied__logo" src="assets/img/logo-aquafit.webp" alt="Aquafit-Aquagym" width="800" height="449">
+      <nav aria-label="Pied de page">
+        <a class="lien-trace" href="index.html">Accueil</a>
+        <a class="lien-trace" href="pour-qui.html">Pour qui</a>
+        <a class="lien-trace" href="horaires-tarifs.html">Horaires &amp; tarifs</a>
+      </nav>
+      <span>© 2026 Aquafit-Aquagym · Vaud &amp; Genève</span>
+      <span class="maquette-note">Maquette · contenus à valider · mentions légales à compléter</span>
+    </div>
+  </div></div>
+</footer>
+
+<script src="assets/js/vendor/gsap.min.js" defer></script>
+<script src="assets/js/vendor/ScrollTrigger.min.js" defer></script>
+<script src="assets/js/vendor/SplitText.min.js" defer></script>
+<script type="module" src="assets/js/main.js"></script>
+</body>
+</html>
+
