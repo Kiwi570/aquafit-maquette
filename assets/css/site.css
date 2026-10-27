@@ -253,9 +253,15 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .carte__legende p { color: var(--texte-2); font-size: .95rem; }
 .carte__num { position: absolute; top: 18px; left: 20px; font-size: var(--t-micro); letter-spacing: .18em; font-weight: 700; color: var(--ecume); text-transform: uppercase; background: rgba(3,20,33,.45); padding: 6px 10px; border-radius: 999px; backdrop-filter: blur(6px); }
 @media (min-width: 901px) {
-  .horizontal { padding-block: clamp(96px, 12vh, 140px) clamp(32px, 6vh, 64px); min-height: 100vh; }
-  .horizontal .horizontal__tete { margin-bottom: clamp(20px, 4vh, 44px); }
-  .horizontal .carte { width: clamp(240px, min(27vw, calc((100vh - 330px) * 0.8)), 420px); }
+  /* Galerie épinglée : elle occupe exactement l'écran sous l'en-tête, et les cartes prennent la place restante. */
+  .section.horizontal { height: 100vh; height: 100svh; min-height: 560px; display: flex; flex-direction: column; padding-block: calc(var(--entete-h, 88px) + clamp(10px, 2.5vh, 32px)) clamp(18px, 3.5vh, 40px); }
+  .horizontal .horizontal__tete { flex: none; margin-bottom: clamp(14px, 3vh, 36px); }
+  .horizontal .titre-xl { font-size: clamp(2.4rem, min(6.4vw, 9vh), 6.6rem); }
+  .horizontal .piste { flex: 1 1 auto; min-height: 0; max-height: min(70vh, 820px); align-items: stretch; }
+  .horizontal .carte { width: auto; height: 100%; aspect-ratio: 4 / 5; }
+  .horizontal .carte__inner { height: 100%; }
+  .horizontal .carte__media { height: 100%; aspect-ratio: auto; }
+  .horizontal .wrap:has(.piste__progres) { flex: none; }
 }
 .piste--native { overflow-x: auto; width: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding-bottom: 8px; }
 .piste--native::-webkit-scrollbar { display: none; }

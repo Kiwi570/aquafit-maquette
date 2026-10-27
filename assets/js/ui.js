@@ -30,6 +30,10 @@ export function entete(glisse) {
   const maj = () => { h.classList.toggle("est-compacte", window.scrollY > 40); };
   window.addEventListener("scroll", maj, { passive: true });
   maj();
+  // Hauteur réelle de l'en-tête, pour que les sections épinglées commencent juste dessous.
+  const hauteur = () => document.documentElement.style.setProperty("--entete-h", Math.round(h.getBoundingClientRect().height) + "px");
+  hauteur();
+  window.addEventListener("resize", hauteur);
 
   const burger = document.querySelector("[data-burger]");
   const menu = document.querySelector("[data-menu]");
