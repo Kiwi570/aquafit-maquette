@@ -1,7 +1,7 @@
 // Carte + fiche de la piscine choisie + « prochain cours ». Utilisé sur l'accueil et sur Horaires & tarifs.
-import { PISCINES, COURS, JOURS, heure, prochainCours, tarifPour, chf } from "./data.js";
-import { dessinerCarte } from "./carte.js";
-import { memoire } from "./ui.js";
+import { PISCINES, COURS, JOURS, heure, prochainCours, tarifPour, chf } from "./data.js?v=20261028";
+import { dessinerCarte } from "./carte.js?v=20261028";
+import { memoire } from "./ui.js?v=20261028";
 
 export function texteProchain(pc) {
   if (!pc) return "";

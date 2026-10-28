@@ -1,13 +1,13 @@
 // Point d'entrée de la maquette Aquafit-Aquagym.
-import { creerEau } from "./eau.js";
-import { creerBulles } from "./bulles.js";
-import { creerSon } from "./son.js";
-import { creerGlisse } from "./glisse.js";
-import { entete, copier, curseur, magnetiques, inclinaisons, transitions, ouverture, memoire, finPointeur, barreEssai } from "./ui.js";
-import * as A from "./anim.js";
-import { piscines } from "./piscines.js";
-import { pageHoraires } from "./horaires.js";
-import { pagePourQui } from "./pourqui.js";
+import { creerEau } from "./eau.js?v=20261028";
+import { creerBulles } from "./bulles.js?v=20261028";
+import { creerSon } from "./son.js?v=20261028";
+import { creerGlisse } from "./glisse.js?v=20261028";
+import { entete, copier, curseur, magnetiques, inclinaisons, transitions, ouverture, memoire, finPointeur, barreEssai } from "./ui.js?v=20261028";
+import * as A from "./anim.js?v=20261028";
+import { piscines } from "./piscines.js?v=20261028";
+import { pageHoraires } from "./horaires.js?v=20261028";
+import { pagePourQui } from "./pourqui.js?v=20261028";
 
 const html = document.documentElement;
 const calme = html.classList.contains("calme");
