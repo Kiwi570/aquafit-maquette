@@ -1,6 +1,6 @@
 // Page Horaires & tarifs : planning en lignes d'eau, calculateur au prorata, tarifs, inscription simulée.
-import { PISCINES, COURS, JOURS, TARIFS, SESSION, heure, enMinutes, maintenantSuisse, prochainCours, tarifPour, seancesPassees, chf } from "./data.js?v=20261028";
-import { memoire } from "./ui.js?v=20261028";
+import { PISCINES, COURS, JOURS, TARIFS, SESSION, heure, enMinutes, maintenantSuisse, prochainCours, tarifPour, seancesPassees, chf } from "./data.js?v=20261028-2";
+import { memoire } from "./ui.js?v=20261028-2";
 
 const H0 = 7.5 * 60, H1 = 21 * 60; // axe horaire du planning
 const pos = (m) => ((m - H0) / (H1 - H0)) * 100;

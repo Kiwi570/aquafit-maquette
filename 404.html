@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Page introuvable · Aquafit-Aquagym</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#062238">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/assets/fonts/InstrumentSerif-Regular.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="/assets/fonts/Manrope-var.woff" as="font" type="font/woff" crossorigin>
+<link rel="stylesheet" href="/assets/css/site.css?v=20261028-2">
+<script>
+(function () {
+  var h = document.documentElement, calme = false;
+  h.classList.add("js");
+  try { calme = localStorage.getItem("aqua-calme") === "1"; } catch (e) {}
+  if (!calme && window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) calme = true;
+  // Ouverture de page masquée le temps de charger les polices : pas de saut de mise en page.
+  var fin = function () { h.classList.remove("polices"); };
+  if (document.fonts && document.fonts.load) {
+    h.classList.add("polices");
+    window.__polices = Promise.race([
+      Promise.all([document.fonts.load('400 1em "Instrument Serif"'), document.fonts.load('italic 400 1em "Instrument Serif"'), document.fonts.load('600 1em "Manrope"')]),
+      new Promise(function (r) { setTimeout(r, 1400); })
+    ]).then(fin, fin);
+    setTimeout(fin, 2500);
+  }
+  if (calme) { h.classList.add("calme"); return; }
+  try {
+    if (sessionStorage.getItem("aqua-vague") === "1") h.classList.add("arrivee");
+    else if (sessionStorage.getItem("aqua-intro") !== "1") h.classList.add("premiere");
+  } catch (e) {}
+})();
+</script>
+</head>
+<body class="page-introuvable">
+
+<a class="evitement" href="#contenu">Aller au contenu</a>
+
+<svg class="voile" data-voile aria-hidden="true" preserveAspectRatio="none">
+  <defs>
+    <linearGradient id="voile-eau" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#39C6D6"/>
+      <stop offset="0.35" stop-color="#0A3350"/>
+      <stop offset="1" stop-color="#031421"/>
+    </linearGradient>
+  </defs>
+  <path data-voile-path d=""/>
+  <path data-voile-ecume d="" fill="none"/>
+</svg>
+
+<canvas class="eau" data-eau aria-hidden="true"></canvas>
+<canvas class="bulles" data-bulles aria-hidden="true"></canvas>
+
+<div class="curseur" data-curseur aria-hidden="true"><span class="curseur__bulle"></span><span class="curseur__txt" data-curseur-txt></span></div>
+
+<div class="jauge" data-jauge aria-hidden="true">
+  <span class="jauge__titre">Profondeur</span>
+  <div class="jauge__rail" data-jauge-rail><i class="jauge__repere" data-jauge-repere></i></div>
+  <span class="jauge__label" data-jauge-label>Surface</span>
+</div>
+
+<svg class="filtres" width="0" height="0" aria-hidden="true" focusable="false">
+  <filter id="onde-emerge" x="-5%" y="-5%" width="110%" height="110%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.008 0.025" numOctaves="2" seed="4" result="bruit"/>
+    <feDisplacementMap data-onde-emerge in="SourceGraphic" in2="bruit" scale="0" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+  <filter id="onde-survol" x="-5%" y="-5%" width="110%" height="110%">
+    <feTurbulence data-onde-survol-bruit type="fractalNoise" baseFrequency="0.01 0.04" numOctaves="1" seed="9" result="bruit"/>
+    <feDisplacementMap data-onde-survol in="SourceGraphic" in2="bruit" scale="0" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<header class="entete" data-entete>
+  <a class="entete__logo" href="/" aria-label="Aquafit-Aquagym, accueil" data-curseur-actif>
+    <img src="/assets/img/logo-aquafit.webp" alt="Aquafit" width="800" height="449">
+  </a>
+  <nav class="entete__nav" aria-label="Navigation principale">
+    <a href="/" data-nav="accueil">Accueil</a>
+    <a href="/pour-qui" data-nav="pour-qui">Pour qui</a>
+    <a href="/horaires-tarifs" data-nav="horaires">Horaires &amp; tarifs</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <div class="entete__outils">
+    <button class="outil" type="button" data-son aria-pressed="false" aria-label="Lancer la musique">
+      <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="outil__txt">En musique</span><span class="outil__court" aria-hidden="true">Son</span>
+    </button>
+    <button class="outil" type="button" data-calme aria-pressed="false">
+      <svg class="vague-ico" viewBox="0 0 18 10" aria-hidden="true"><path d="M1 5c2-3 3-3 4 0s2 3 4 0 2-3 4 0 2 3 4 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span class="outil__txt">Mode calme</span><span class="outil__court" aria-hidden="true">Calme</span>
+    </button>
+    <a class="bouton bouton--corail bouton--petit magnet" href="/horaires-tarifs#inscription"><span class="bouton__txt">Cours d'essai offert</span></a>
+    <button class="burger" type="button" data-burger aria-expanded="false" aria-controls="menu-mobile"><span></span><span></span><span class="sr">Menu</span></button>
+  </div>
+</header>
+
+<div class="menu-mobile" id="menu-mobile" data-menu hidden>
+  <nav aria-label="Navigation mobile">
+    <a href="/" data-nav="accueil">Accueil</a>
+    <a href="/pour-qui" data-nav="pour-qui">Pour qui</a>
+    <a href="/horaires-tarifs" data-nav="horaires">Horaires &amp; tarifs</a>
+  </nav>
+  <a class="bouton bouton--corail" href="/horaires-tarifs#inscription">Réserver mon cours d'essai offert</a>
+  <div class="menu-mobile__bas">
+    <a class="lien-trace" href="https://wa.me/41794850453" target="_blank" rel="noopener">Écrire sur WhatsApp ↗</a>
+    <span>079 485 04 53</span>
+    <span>aquafitaquagym@gmail.com</span>
+  </div>
+</div>
+
+<main id="contenu">
+
+  <section class="hero hero--page introuvable" data-section="Surface">
+    <div class="wrap hero__contenu">
+      <span class="surtitre">Erreur 404</span>
+      <h1 class="titre-geant hero__titre">Vous avez touché <em>le fond.</em></h1>
+      <div class="hero__bas">
+        <p class="chapo">Cette page n'existe pas ou a changé d'adresse.</p>
+        <div class="hero__actions">
+          <a class="bouton bouton--corail" href="/"><span class="bouton__txt">Remonter à l'accueil</span></a>
+          <a class="bouton bouton--ligne" href="/horaires-tarifs"><span class="bouton__txt">Voir les horaires</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pied" id="contact" data-section="Surface">
+  <svg class="pied__vague" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path data-pied-vague d="M0 50 C 180 20 360 20 540 50 S 900 80 1080 50 S 1350 25 1440 45 V90 H0Z"/></svg>
+  <div class="pied__corps"><div class="wrap">
+    <div class="pied__haut">
+      <div class="pile">
+        <span class="surtitre" style="color:#0E7F8C">Contact</span>
+        <h2 class="pied__titre">Une question avant <em>de plonger&nbsp;?</em></h2>
+        <p style="color:#3D5A6C;max-width:30em">Salma Charmey et Morgane Broye répondent par téléphone, par WhatsApp ou par e-mail. Pour l'inscription, le formulaire en ligne reste le plus simple.</p>
+        <div class="actions">
+          <a class="bouton bouton--corail magnet" href="/horaires-tarifs#inscription"><span class="bouton__txt">S'inscrire en ligne</span></a>
+        </div>
+      </div>
+      <div class="contacts">
+        <div class="contact">
+          <div><small>Téléphone</small><span class="contact__valeur" data-copie-source="tel">079 485 04 53</span></div>
+          <button class="copier" type="button" data-copier="tel">Copier</button>
+        </div>
+        <div class="contact">
+          <div><small>E-mail</small><span class="contact__valeur" data-copie-source="mail">aquafitaquagym@gmail.com</span></div>
+          <button class="copier" type="button" data-copier="mail">Copier</button>
+        </div>
+        <div class="contact">
+          <div><small>WhatsApp</small><a class="contact__valeur lien-trace" href="https://wa.me/41794850453" target="_blank" rel="noopener">Écrire un message</a></div>
+          <span aria-hidden="true">↗</span>
+        </div>
+        <div class="contact">
+          <div><small>Facebook</small><a class="contact__valeur lien-trace" href="https://www.facebook.com/aquafitaquagym" target="_blank" rel="noopener">facebook.com/aquafitaquagym</a></div>
+          <span aria-hidden="true">↗</span>
+        </div>
+      </div>
+    </div>
+    <div class="pied__bas">
+      <img class="pied__logo" src="/assets/img/logo-aquafit.webp" alt="Aquafit-Aquagym" width="800" height="449">
+      <nav aria-label="Pied de page">
+        <a class="lien-trace" href="/">Accueil</a>
+        <a class="lien-trace" href="/pour-qui">Pour qui</a>
+        <a class="lien-trace" href="/horaires-tarifs">Horaires &amp; tarifs</a>
+      </nav>
+      <span>© 2026 Aquafit-Aquagym · Vaud &amp; Genève</span>
+      <span class="maquette-note">Maquette · contenus à valider · mentions légales à compléter</span>
+    </div>
+  </div></div>
+</footer>
+
+<script src="/assets/js/vendor/gsap.min.js" defer></script>
+<script src="/assets/js/vendor/ScrollTrigger.min.js" defer></script>
+<script src="/assets/js/vendor/SplitText.min.js" defer></script>
+<script type="module" src="/assets/js/main.js?v=20261028-2"></script>
+</body>
+</html>
+

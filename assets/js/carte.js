@@ -1,5 +1,5 @@
 // Carte stylisée du Petit-Lac (Léman) avec les six piscines.
-import { PISCINES } from "./data.js?v=20261028";
+import { PISCINES } from "./data.js?v=20261028-2";
 
 const NS = "http://www.w3.org/2000/svg";
 const L = { w: 560, h: 640, lon0: 6.06, lat1: 46.5, kx: 1380, ky: 2000, ox: 59 };

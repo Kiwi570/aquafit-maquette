@@ -686,3 +686,61 @@ html:not(.js) .piste { overflow-x: auto; width: auto; }
   .burger span:nth-child(1) { top: 17px; }
   .burger span:nth-child(2) { top: 24px; }
 }
+
+/* =========================================================================
+   v3 : corrections de l'audit (étape 2)
+   ========================================================================= */
+
+/* Section épinglée du gilet : elle tient dans l'écran sous l'en-tête mesuré (--entete-h),
+   au-dessus de la barre du bas (--barres-h), et la scène prend la hauteur restante. */
+@media (min-width: 901px) {
+  .section.gilet { height: 100vh; height: 100svh; min-height: 520px; display: flex; flex-direction: column; justify-content: center; padding-block: calc(var(--entete-h, 88px) + clamp(12px, 3vh, 40px)) calc(var(--barres-h, 0px) + clamp(16px, 4vh, 48px)); }
+  .gilet .gilet__grille { flex: 1 1 auto; min-height: 0; grid-template-rows: minmax(0, 1fr); align-items: center; }
+  .gilet .gilet__grille > div:first-child { min-height: 0; }
+  .gilet .titre-xl { font-size: clamp(2.4rem, min(7.2vw, 9.5vh), 7rem); }
+  .gilet .texte { margin-top: clamp(10px, 2.4vh, 22px) !important; }
+  .gilet .gilet__points { margin-top: clamp(12px, 3vh, 48px); }
+  .gilet .gilet__points li { padding: clamp(8px, 1.8vh, 18px) 0; }
+  .gilet .gilet__points li strong { font-size: clamp(1.25rem, min(2.3vw, 3.6vh), 2.1rem); }
+  .gilet .gilet__visuel { height: 100%; min-height: 0; display: flex; align-items: center; }
+  .gilet .gilet__scene { max-height: 100%; }
+  .gilet .gilet__photo { bottom: 3%; right: -4%; }
+}
+@media (min-width: 901px) and (max-height: 800px), (min-width: 901px) and (max-width: 1100px) {
+  .gilet .texte { font-size: .95rem; line-height: 1.5; }
+  .gilet .gilet__points li { line-height: 1.4; font-size: .95rem; }
+  .gilet .titre-xl { font-size: clamp(2.2rem, min(5.6vw, 8.5vh), 7rem); }
+}
+@media (min-width: 901px) and (max-height: 660px) {
+  .gilet .gilet__grille { gap: 32px; }
+  .gilet .texte { font-size: .9rem; line-height: 1.45; }
+  .gilet .gilet__points li { grid-template-columns: 36px minmax(0, 1fr); gap: 12px; padding: 6px 0; font-size: .88rem; line-height: 1.35; }
+  .gilet .gilet__points .pastille { width: 36px; height: 36px; }
+  .gilet .gilet__points li strong { font-size: 1.2rem; margin-bottom: 2px; }
+}
+
+/* Hero à 320 px : le chapo et le bouton passent à la ligne au lieu d'être rognés. */
+.hero__bas > * { min-width: 0; }
+@media (max-width: 360px) { .hero__actions .bouton { white-space: normal; text-align: center; padding-block: 12px; } }
+
+/* Textes de 12 px au minimum. */
+.a-confirmer { font-size: max(12px, .75rem); }
+.cours__txt small, .couloir__jour small, .planning__heures span { font-size: max(12px, .75rem); }
+/* Bouées du planning : un peu moins de marge intérieure pour garder le nom de la piscine entier à 12 px. */
+.cours { padding: 0 8px 0 8px; gap: 5px; }
+.cours__txt small { letter-spacing: 0; }
+
+/* Zones tactiles de 44 px sur téléphone et tablette. */
+@media (max-width: 960px) {
+  .outil, .copier, .puce, .bouton--petit, .fiche .bouton, .actions .bouton { min-height: 44px; }
+  .burger { min-width: 44px; min-height: 44px; }
+  .entete__logo { display: inline-flex; align-items: center; min-height: 44px; }
+  .contact__valeur.lien-trace, .pied__bas nav a { display: inline-flex; align-items: center; min-height: 44px; }
+  .tarif__retourner { min-height: 44px; }
+}
+@media (max-width: 360px) {
+  .outil { min-height: 44px; }
+  .burger { width: 44px; height: 44px; }
+  .burger span:nth-child(1) { top: 18px; }
+  .burger span:nth-child(2) { top: 25px; }
+}

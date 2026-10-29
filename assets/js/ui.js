@@ -264,9 +264,11 @@ export async function ouverture(v) {
     .to(intro.querySelector(".intro__logo"), { y: -6, duration: 0.5, ease: "sine.inOut", yoyo: true, repeat: 1 }, 0.6)
     .to(intro, { yPercent: -60, opacity: 0, duration: 0.8, ease: "power3.in" }, 1.25);
   await new Promise((ok) => setTimeout(ok, 1300));
-  await balayer(v, { de: 1.15, a: -0.2, depuisHaut: true, surface: true, duree: 1.0 });
-  intro.classList.remove("est-visible");
-  v.svg.classList.remove("est-visible", "est-surface");
+  // Le titre arrive pendant le balayage : la promesse se résout dès le départ de la vague.
+  balayer(v, { de: 1.15, a: -0.2, depuisHaut: true, surface: true, duree: 1.0 }).then(() => {
+    intro.classList.remove("est-visible");
+    v.svg.classList.remove("est-visible", "est-surface");
+  });
 }
 
 // Barre « Cours d'essai offert » (téléphone, tablette) : visible après l'ouverture de page,
@@ -277,10 +279,14 @@ export function barreEssai() {
   const liens = barre.querySelectorAll("a");
   const zones = [...document.querySelectorAll("#inscription, .pied")];
   const visibles = new Set();
+  let hauteur = "";
   const maj = () => {
     const montrer = window.scrollY > window.innerHeight * 0.6 && visibles.size === 0;
     barre.classList.toggle("est-visible", montrer);
     barre.setAttribute("aria-hidden", String(!montrer));
+    // Hauteur réelle de la barre : les sections épinglées réservent cette place en bas.
+    const h = (montrer && getComputedStyle(barre).display !== "none" ? Math.round(barre.getBoundingClientRect().height) : 0) + "px";
+    if (h !== hauteur) { hauteur = h; document.documentElement.style.setProperty("--barres-h", h); }
     liens.forEach((a) => a.setAttribute("tabindex", montrer ? "0" : "-1"));
   };
   if ("IntersectionObserver" in window) {

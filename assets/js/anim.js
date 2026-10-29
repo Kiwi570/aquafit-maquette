@@ -25,7 +25,7 @@ export function ouvertureHero(attente) {
   }
   const tl = gsap.timeline({ paused: true });
   if (chars.length) {
-    tl.from(chars, { yPercent: 120, opacity: 0, rotate: 6, duration: 1.3, ease: "expo.out", stagger: 0.03 }, 0);
+    tl.from(chars, { yPercent: 120, opacity: 0, rotate: 6, duration: 1.1, ease: "expo.out", stagger: 0.015 }, 0);
   }
   tl.from(apparitions, { y: 30, opacity: 0, duration: 1, ease: "power3.out", stagger: 0.1 }, 0.25);
   tl.from(".hero__media img", { scale: 1.18, duration: 2.2, ease: "power3.out" }, 0);
